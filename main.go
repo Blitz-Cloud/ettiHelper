@@ -7,6 +7,7 @@ import (
 
 	"github.com/davecgh/go-spew/spew"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/template/mustache/v2"
 )
 
 type Post struct {
@@ -39,9 +40,14 @@ var exampleRoot FsNode
 var examples []Example
 
 func main() {
+	// initializarea bazei de date
 	Explorer("/home/ionut/facultate/seminar", &exampleRoot, &examples)
-	spew.Dump(examples)
-	app := fiber.New()
+	// pentru debug
+	//spew.Dump(examples)
+	engine := mustache.New("./views", ".html")
+	app := fiber.New(fiber.Config{
+		Views: engine,
+	})
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.Redirect("/login")
 	})
@@ -53,7 +59,7 @@ func main() {
 		if date != "" {
 			return c.Redirect("/posts")
 		}
-		return c.Render("./pages/login.html", fiber.Map{})
+		return c.Render("login", fiber.Map{})
 	})
 	app.Post("/login", func(c *fiber.Ctx) error {
 		data, err := url.ParseQuery(string(c.Body()))
@@ -80,7 +86,7 @@ func main() {
 				examplesByDay = append(examplesByDay, examples[i].Name)
 			}
 		}
-		return c.Render("./pages/post.html", fiber.Map{"posts": examplesByDay})
+		return c.Render("post", fiber.Map{"posts": examplesByDay})
 	})
 
 	app.Get("/posts", func(c *fiber.Ctx) error {
@@ -102,7 +108,9 @@ func main() {
 			}
 
 			spew.Dump(examples)
-			return c.Render("./pages/post.html", fiber.Map{"posts": examples})
+			//testData := []struct{ name string }{
+			//	{"Hello"}, {"World"}}
+			return c.Render("post", fiber.Map{"posts": examples})
 		} else {
 			return c.Redirect("/login")
 		}
