@@ -56,11 +56,11 @@ func Explorer(location string, node *FsNode, examples *[]Example) {
 				content:  string(fileContent),
 				parent:   node,
 			}
-			data, _ := time.Parse("2_Jan_2006", (node.parent).name)
+			date, _ := time.Parse("2_Jan_2006", (node.parent).name)
 			newExample := Example{
 				Location: fileLocation,
 				Name:     node.name,
-				Date:     fmt.Sprintf("%d-%s-%d", data.Day(), data.Month().String(), data.Year()),
+				Date:     fmt.Sprintf("%d-%s-%d", date.Day(), date.Month().String()[:3], date.Year()),
 				Content:  string(fileContent),
 			}
 			*examples = append((*examples), newExample)
