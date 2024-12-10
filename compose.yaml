@@ -16,6 +16,23 @@ services:
       - 3000:3000
     volumes:
       - "/home/ionut/facultate/seminar:/home/ionut/facultate/seminar:rw"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.ettih.rule=Host(`ettih.blitzcloud.me`)"
+      - "traefik.http.routers.ettih.entrypoints=https"
+      - "traefik.http.routers.ettih.tls=true"
+      - "traefik.http.services.ettih.loadbalancer.server.port=8080"
+      #Define midleware
+      - "traefik.http.routers.ettih.middlewares=my-traefikBouncer@file,my-cloudflarewarp@file"
+        ## Middleware configuration
+        #- "traefik.http.middlewares.crowdsec-nginx.plugin.crowdsec-bouncer.enabled=true"
+        #- "traefik.http.middlewares.crowdsec-nginx.plugin.crowdsec-bouncer.crowdseclapikey=jrXGBQ/HL/YTW4JjGhzNKYDfpVuYhSJKVYgktH/xF5E"
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true
 # The commented out section below is an example of how to define a PostgreSQL
 # database that your application can use. `depends_on` tells Docker Compose to
 # start the database before your application. The `db-data` volume persists the
