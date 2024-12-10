@@ -4,25 +4,40 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/themes/prism.min.css"
+      integrity="sha512-/mZ1FHPkg6EKcxo0fKXF51ak6Cr2ocgDi5ytaTBjsQZIH/RNs6GF6+oId/vPe3eJB836T36nXwVh/WBl/cWT4w=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
     <title>Document</title>
   </head>
-  <body class="max-w-3xl px-4 pt-6 lg:pt-10 pb-12 sm:px-6 lg:px-8 mx-auto">
+  <body>
     <!-- Blog Article -->
     <div class="max-w-3xl px-4 pt-6 lg:pt-10 pb-12 sm:px-6 lg:px-8 mx-auto">
       <div class="max-w-2xl">
-        {{#posts}}
-        <div
-          class="mt-1 mb-1 p-4 border border-gray-200 rounded-lg dark:border-neutral-700 min-w-[220px]"
-        >
-          <h3 class="font-semibold text-sm text-black">{{Name}}</h3>
+        <!-- Content -->
+        <div class="space-y-5 md:space-y-8">
+          {{#post}}
+          <pre>
+            <code class="language-css">
+              {{Content}}
+            </code>
+          </pre>
 
-          <p class="mb-1 text-xs">{{Date}}</p>
-
-          <p class="mt-1 text-sm text-gray-600"></p>
+          {{/post}}
         </div>
-        {{/posts}}
+
+        <!-- End Content -->
       </div>
-      <!-- End Blog Article -->
     </div>
+    <!-- End Blog Article -->
   </body>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/prism.min.js"
+    integrity="sha512-UOoJElONeUNzQbbKQbjldDf9MwOHqxNz49NNJJ1d90yp+X9edsHyJoAs6O4K19CZGaIdjI5ohK+O2y5lBTW6uQ=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  ></script>
 </html>

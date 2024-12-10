@@ -5,6 +5,7 @@ import (
 	"net/url"
 	"time"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/template/mustache/v2"
 )
@@ -67,7 +68,8 @@ func main() {
 				examplesByDay = append(examplesByDay, examples[i].Name)
 			}
 		}
-		return c.Render("post", fiber.Map{"posts": examplesByDay})
+		spew.Dump(examplesByDay)
+		return c.Render("posts", fiber.Map{"posts": examplesByDay})
 	})
 
 	app.Get("/posts", func(c *fiber.Ctx) error {
@@ -86,10 +88,26 @@ func main() {
 				}
 			}
 
-			return c.Render("post", fiber.Map{"posts": examples})
+			return c.Render("posts", fiber.Map{"posts": examples})
 		} else {
 			return c.Redirect("/login")
 		}
+	})
+
+	app.Get("/post/:date/:name", func(c *fiber.Ctx) error {
+		date := c.Params("date")
+		name := c.Params("name")
+		example := new(Example)
+		for i := 0; i < len(examples); i++ {
+			if examples[i].Name == name && examples[i].Date == date {
+
+				example = &examples[i]
+				break
+			}
+		}
+		return c.Render("post", fiber.Map{
+			"post": example,
+		})
 	})
 
 	app.Listen(":3000")
