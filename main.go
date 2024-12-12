@@ -27,12 +27,17 @@ func main() {
 	// pentru debug
 	//spew.Dump(examples)
 
+	// initializing the fiber app and setting the view engine
 	engine := mustache.New("./views", ".html")
 	app := fiber.New(fiber.Config{
 		Views: engine,
 	})
+	app.Static("/static", "./static")
 
+	// logging
 	app.Use(logger.New())
+
+	// routes
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.Redirect("/login")
 	})
