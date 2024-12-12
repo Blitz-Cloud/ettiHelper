@@ -40,6 +40,10 @@ func main() {
 	// inca este incompleta
 
 	app.Get("/login", func(c *fiber.Ctx) error {
+		date := c.Cookies("testC")
+		if date != "" {
+			return c.Redirect("/posts")
+		}
 		return c.Render("login", fiber.Map{})
 	})
 	app.Post("/login", func(c *fiber.Ctx) error {
