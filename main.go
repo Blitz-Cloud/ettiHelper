@@ -30,7 +30,8 @@ func main() {
 	// initializing the fiber app and setting the view engine
 	engine := mustache.New("./views", ".html")
 	app := fiber.New(fiber.Config{
-		Views: engine,
+		Views:       engine,
+		ViewsLayout: "layout/main",
 	})
 	app.Static("/static", "./static")
 
@@ -69,6 +70,7 @@ func main() {
 	})
 
 	authGroup := app.Group("/", RouteProtector)
+
 	authGroup.Get("/post/:day", func(c *fiber.Ctx) error {
 		day := c.Params("day")
 		examplesByDay := make([]string, len(examples))
@@ -95,7 +97,8 @@ func main() {
 			}
 		}
 
-		return c.Render("posts", fiber.Map{"posts": examples})
+		return c.Render("posts", fiber.Map{"posts": examples,
+			"Title": "Posts"})
 	})
 
 	authGroup.Get("/post/:date/:name", func(c *fiber.Ctx) error {
