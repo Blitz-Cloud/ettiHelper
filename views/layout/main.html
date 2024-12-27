@@ -6,7 +6,8 @@
     <link rel="stylesheet" href="/static/output.css" />
     <title>{{Title}}</title>
   </head>
-  <body class="">
-    {{&embed}}
+  <body class="min-h-screen ctp-macchiato bg-ctp-base">
+    {{> views/partials/nav.html}}
+    <div class="h-full">{{&embed}}</div>
   </body>
 </html>

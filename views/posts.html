@@ -4,14 +4,16 @@
     <div class="max-w-2xl">
       {{#posts}}
       <a href="/post/{{Date}}/{{Name}}">
-        <div
-          class="mt-1 mb-1 p-4 border rounded-lg dark:border-neutral-700 min-w-[220px]"
-        >
-          <h3 class="font-semibold text-sm text-black">{{Name}}</h3>
+        <div class="my-3 p-4 border rounded-lg min-w-[220px] border-ctp-pink">
+          <h3
+            class="font-semibold text-lg bg-gradient-to-r from-ctp-pink to-ctp-mauve inline-block text-transparent bg-clip-text dark:text-slate-300"
+          >
+            {{Name}}
+          </h3>
 
-          <p class="mb-1 text-xs">{{Date}}</p>
+          <p class="mb-1 text-sm text-ctp-subtext1">{{Date}}</p>
 
-          <p class="mt-1 text-sm text-gray-600"></p>
+          <p class="mt-1 text-sm"></p>
         </div>
       </a>
       {{/posts}}
