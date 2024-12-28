@@ -125,6 +125,19 @@ func main() {
 			"post": example,
 		})
 	})
+	authGroup.Get("/api/post/:date/:name", func(c *fiber.Ctx) error {
+		date := c.Params("date")
+		name := c.Params("name")
+		example := new(Example)
+		for i := 0; i < len(examples); i++ {
+			if examples[i].Name == name && examples[i].Date == date {
+
+				example = &examples[i]
+				break
+			}
+		}
+		return c.SendString(example.Content)
+	})
 
 	app.Listen(":3000")
 	fmt.Printf("Hello World")

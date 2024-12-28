@@ -14,7 +14,16 @@
       <!-- Content -->
       <div class="space-y-5 md:space-y-8">
         {{#post}}
-        <pre><code class="language-css">{{Content}}</code></pre>
+        <div class="relative">
+          <button
+            id="copyCode"
+            class="absolute right-3 top-[-15px] z-10 px-3 border border=[3px] border-ctp-rosewater rounded-lg bg-ctp-base text-ctp-mauve font-normal text-lg"
+            onclick="getCodeToCopy('{{Date}}/{{Name}}')"
+          >
+            Copy Code
+          </button>
+          <pre><code class="language-css">{{Content}}</code></pre>
+        </div>
 
         {{/post}}
       </div>
