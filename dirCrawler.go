@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -61,7 +62,7 @@ func Explorer(location string, node *FsNode, examples *[]Example) {
 				Location: fileLocation,
 				Name:     node.name,
 				Date:     fmt.Sprintf("%d-%s-%d", date.Day(), date.Month().String()[:3], date.Year()),
-				Content:  string(fileContent),
+				Content:  strings.Replace(strings.Trim(string(fileContent), " "), "\n", "", 1),
 			}
 			*examples = append((*examples), newExample)
 			node.files = append(node.files, &newFile)
