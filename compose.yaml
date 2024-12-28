@@ -7,6 +7,7 @@ services:
       - 3000:3000
     volumes:
       - "/home/ionut/facultate/seminar:/home/ionut/facultate/seminar:rw"
+      - "./.env:/app/.env"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.ettih.rule=Host(`ettih.blitzcloud.me`)"
