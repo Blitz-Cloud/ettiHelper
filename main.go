@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/url"
 	"time"
 
@@ -9,6 +10,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/template/mustache/v2"
+	"github.com/joho/godotenv"
 )
 
 type Post struct {
@@ -21,11 +23,14 @@ var exampleRoot FsNode
 var examples []Example
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Env file not loaded or missing")
+	}
+
 	// initializarea bazei de date
 	Explorer("/home/ionut/facultate/seminar", &exampleRoot, &examples)
 	SortDescending(examples)
-	// pentru debug
-	//spew.Dump(examples)
 
 	// initializing the fiber app and setting the view engine
 	engine := mustache.New("./views", ".html")
@@ -44,6 +49,8 @@ func main() {
 	})
 
 	// inca este incompleta
+
+	//legacy login
 
 	app.Get("/login", func(c *fiber.Ctx) error {
 		date := c.Cookies("testC")
@@ -68,6 +75,8 @@ func main() {
 		fmt.Println(data["password"][0])
 		return c.Redirect("/posts")
 	})
+
+	// new login flow
 
 	authGroup := app.Group("/", RouteProtector)
 
