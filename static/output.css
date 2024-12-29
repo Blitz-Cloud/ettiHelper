@@ -1351,12 +1351,12 @@ input:checked + .toggle-bg {
   height: 2.25rem;
 }
 
-.h-full {
-  height: 100%;
-}
-
 .h-\[41px\] {
   height: 41px;
+}
+
+.h-full {
+  height: 100%;
 }
 
 .min-h-screen {

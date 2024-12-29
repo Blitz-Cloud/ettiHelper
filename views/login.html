@@ -73,8 +73,10 @@
 
 <script>
   const loginBtn = document.getElementById("loginBtn");
+  console.log(loginBtn);
   loginBtn.addEventListener("click", () => {
-    location.href.replace("https://ettih.blitzcloud.me/auth/microsoft");
+    console.log("Btn clicked");
+    window.location.replace("https://ettih.blitzcloud.me/auth/microsoft");
   });
 </script>
 
