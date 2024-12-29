@@ -37,10 +37,7 @@ func RegisterMicrosoftOAuth(app *fiber.App) {
 	spew.Dump(oauth2Config)
 
 	router := app.Group("/auth/microsoft")
-	router.Get("/test", func(c *fiber.Ctx) error {
-		return c.SendString("This is a test")
-	})
-	router.Get("/login", func(c *fiber.Ctx) error {
+	router.Get("/", func(c *fiber.Ctx) error {
 		authUrl := oauth2Config.AuthCodeURL("state", oauth2.AccessTypeOffline, oauth2.S256ChallengeOption(verifier))
 		return c.Redirect(authUrl)
 	})

@@ -44,6 +44,7 @@
         </div> -->
 
         <div
+          id="loginBtn"
           class="flex items-center justify-center dark:bg-[#2f2f2f] px-[12px] mt-4 h-[41px] cursor-pointer font-semibold"
           style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
         >
@@ -69,6 +70,13 @@
     </div>
   </div>
 </main>
+
+<script>
+  const loginBtn = document.getElementById("loginBtn");
+  loginBtn.addEventListener("click", () => {
+    location.href.replace("https://ettih.blitzcloud.me/auth/microsoft");
+  });
+</script>
 
 <!-- <main class="flex min-h-screen items-center py-16">
   <div class="w-full max-w-md mx-auto p-6 text-center">
