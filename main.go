@@ -3,9 +3,9 @@ package main
 import (
 	"fmt"
 	"log"
-	"net/url"
-	"time"
 
+	"github.com/Blitz-Cloud/ettiHelper/middleware"
+	"github.com/Blitz-Cloud/ettiHelper/routes"
 	"github.com/davecgh/go-spew/spew"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -23,6 +23,7 @@ var exampleRoot FsNode
 var examples []Example
 
 func main() {
+
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Env file not loaded or missing")
@@ -59,26 +60,27 @@ func main() {
 		}
 		return c.Render("login", fiber.Map{})
 	})
-	app.Post("/login", func(c *fiber.Ctx) error {
-		data, err := url.ParseQuery(string(c.Body()))
-		if err != nil {
-			return err
-		}
-		if data["password"][0] == "h3lloId" {
-			c.Cookie(&fiber.Cookie{
-				Name:     "testC",
-				Value:    "test",
-				Expires:  time.Now().Add(7 * 24 * time.Hour),
-				HTTPOnly: true,
-			})
-		}
-		fmt.Println(data["password"][0])
-		return c.Redirect("/posts")
-	})
+	// app.Post("/login", func(c *fiber.Ctx) error {
+	// 	data, err := url.ParseQuery(string(c.Body()))
+	// 	if err != nil {
+	// 		return err
+	// 	}
+	// 	if data["password"][0] == "h3lloId" {
+	// 		c.Cookie(&fiber.Cookie{
+	// 			Name:     "testC",
+	// 			Value:    "test",
+	// 			Expires:  time.Now().Add(7 * 24 * time.Hour),
+	// 			HTTPOnly: true,
+	// 		})
+	// 	}
+	// 	fmt.Println(data["password"][0])
+	// 	return c.Redirect("/posts")
+	// })
 
 	// new login flow
+	routes.RegisterMicrosoftOAuth(app)
 
-	authGroup := app.Group("/", RouteProtector)
+	authGroup := app.Group("/", middleware.RouteProtector)
 
 	authGroup.Get("/post/:day", func(c *fiber.Ctx) error {
 		day := c.Params("day")

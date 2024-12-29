@@ -23,6 +23,7 @@ WORKDIR /app
 # Create the `public` dir and copy all the assets into it
 RUN mkdir ./views
 COPY ./views ./views
+COPY ./static ./static
 
 #  should be replaced here as well
 COPY --from=build /go/src/ettiHelper/app .
