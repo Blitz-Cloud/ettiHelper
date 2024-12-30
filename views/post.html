@@ -1,17 +1,6 @@
-<head>
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/themes/prism.min.css"
-    integrity="sha512-/mZ1FHPkg6EKcxo0fKXF51ak6Cr2ocgDi5ytaTBjsQZIH/RNs6GF6+oId/vPe3eJB836T36nXwVh/WBl/cWT4w=="
-    crossorigin="anonymous"
-    referrerpolicy="no-referrer"
-  />
-</head>
 <main>
-  <!-- Blog Article -->
   <div class="max-w-3xl px-4 pt-6 lg:pt-10 pb-12 sm:px-6 lg:px-8 mx-auto">
     <div class="max-w-2xl">
-      <!-- Content -->
       <div class="space-y-5 md:space-y-8">
         {{#post}}
         <div class="relative">
@@ -22,20 +11,28 @@
           >
             Copy Code
           </button>
-          <pre><code class="language-css">{{Content}}</code></pre>
+          <!-- prettier-ignore -->
+          <div
+            id="codeBlock"
+            class="overflow-auto bg-inherit"
+          >{{Content}}</div>
         </div>
-
         {{/post}}
       </div>
-
-      <!-- End Content -->
     </div>
   </div>
-  <!-- End Blog Article -->
 </main>
-<script
-  src="https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/prism.min.js"
-  integrity="sha512-UOoJElONeUNzQbbKQbjldDf9MwOHqxNz49NNJJ1d90yp+X9edsHyJoAs6O4K19CZGaIdjI5ohK+O2y5lBTW6uQ=="
-  crossorigin="anonymous"
-  referrerpolicy="no-referrer"
-></script>
+
+<script type="module">
+  import { codeToHtml, codeToTokens } from "https://esm.sh/shiki@1.24.4";
+
+  const codeBlock = document.getElementById("codeBlock");
+  const data = await codeToHtml(`${codeBlock.textContent}`, {
+    lang: "c",
+    theme: "night-owl",
+  });
+  codeBlock.innerHTML = data;
+  codeBlock.style.background = codeBlock.childNodes[0].style.background;
+  console.log(codeBlock.style.background);
+  console.log(codeBlock.childNodes[0].style);
+</script>
