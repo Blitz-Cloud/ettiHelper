@@ -1280,6 +1280,11 @@ input:checked + .toggle-bg {
   margin-bottom: 1.75rem;
 }
 
+.mx-1 {
+  margin-left: 0.25rem;
+  margin-right: 0.25rem;
+}
+
 .\!me-1 {
   margin-inline-end: 0.25rem !important;
 }
@@ -1503,6 +1508,11 @@ input:checked + .toggle-bg {
 
 .min-w-\[220px\] {
   min-width: 220px;
+}
+
+.min-w-max {
+  min-width: -moz-max-content;
+  min-width: max-content;
 }
 
 .max-w-2xl {
@@ -2277,6 +2287,10 @@ input:checked + .toggle-bg {
   transition-duration: 500ms;
 }
 
+.duration-300 {
+  transition-duration: 300ms;
+}
+
 .ease-linear {
   transition-timing-function: linear;
 }
@@ -2705,6 +2719,11 @@ pre > code {
 .dark\:focus\:ring-neutral-600:focus:is(.dark *) {
   --tw-ring-opacity: 1;
   --tw-ring-color: rgb(82 82 82 / var(--tw-ring-opacity, 1));
+}
+
+.dark\:focus\:ring-blue-800:focus:is(.dark *) {
+  --tw-ring-opacity: 1;
+  --tw-ring-color: rgb(30 66 159 / var(--tw-ring-opacity, 1));
 }
 
 @media (min-width: 640px) {

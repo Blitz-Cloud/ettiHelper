@@ -116,15 +116,28 @@ func main() {
 		date := c.Params("date")
 		name := c.Params("name")
 		example := new(Example)
+		previousPost := ""
+		nextPost := ""
 		for i := 0; i < len(examples); i++ {
 			if examples[i].Name == name && examples[i].Date == date {
 
 				example = &examples[i]
+				spew.Dump(examples[i].Date)
+				previousPost = fmt.Sprintf("%s/%s", examples[i+1].Date, examples[i+1].Name)
+				if i == 0 {
+
+					nextPost = fmt.Sprintf("%s/%s", examples[i].Date, examples[i].Name)
+				} else {
+					nextPost = fmt.Sprintf("%s/%s", examples[i-1].Date, examples[i-1].Name)
+				}
 				break
 			}
 		}
+
 		return c.Render("post", fiber.Map{
-			"post": example,
+			"post":         example,
+			"previousPost": previousPost,
+			"nextPost":     nextPost,
 		})
 	})
 	authGroup.Get("/api/post/:date/:name", func(c *fiber.Ctx) error {
