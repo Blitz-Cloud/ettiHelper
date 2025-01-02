@@ -31,7 +31,7 @@ func main() {
 
 	// initializarea bazei de date
 	Explorer("/home/ionut/facultate/seminar", &exampleRoot, &examples)
-	SortDescending(examples)
+	SortDescending(&examples)
 
 	// initializing the fiber app and setting the view engine
 	engine := mustache.New("./views", ".html")
