@@ -61,6 +61,16 @@ func main() {
 		}
 		return c.Render("login", fiber.Map{})
 	})
+
+	app.Get("/blog/test", func(c *fiber.Ctx) error {
+		data, err := os.ReadFile("./content/test.md")
+		if err != nil {
+			log.Fatal("Cant read the file")
+		}
+		return c.Render("blogPost", fiber.Map{
+			"content": string(Md2Html(data)),
+		})
+	})
 	// app.Post("/login", func(c *fiber.Ctx) error {
 	// 	data, err := url.ParseQuery(string(c.Body()))
 	// 	if err != nil {
@@ -158,15 +168,6 @@ func main() {
 		return c.SendString(example.Content)
 	})
 
-	app.Get("/blog/test", func(c *fiber.Ctx) error {
-		data, err := os.ReadFile("./content/test.md")
-		if err != nil {
-			log.Fatal("Cant read the file")
-		}
-		return c.Render("blogPost", fiber.Map{
-			"content": string(Md2Html(data)),
-		})
-	})
 	app.Listen(":3000")
 	fmt.Printf("Hello World")
 }
