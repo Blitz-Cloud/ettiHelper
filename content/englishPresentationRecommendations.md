@@ -1,0 +1,32 @@
+# Here is the list of resources that i promised you
+
+YouTube channels:
+
+- [NetworkChuck](https://www.youtube.com/@NetworkChuck) Topics: networking and self hosting
+- [David Bombal](https://www.youtube.com/@davidbombal) Topics: networking
+- [Jeff Geerling](https://www.youtube.com/@JeffGeerling) Topics: Hardware
+- [DBTech](https://www.youtube.com/@DBTechYT) Topics: self hosting
+- [Fireship](https://www.youtube.com/@Fireship) Topics: short form videos about tech(not the TikTok format)
+- [ServeTheHome](https://www.youtube.com/@ServeTheHomeVideo) Topics: hardware enthusiastic
+- [Jack Rhysider](https://www.youtube.com/@JackRhysider) Topics: Entertainment. To help you pass the time
+
+Books(just amazon link, but [linux isos](https://news.ycombinator.com/item?id=27531020) are a thing):
+
+- [The holy Linux Bible](https://www.amazon.com/Linux-Bible-Christopher-Negus/dp/1119578884)
+- [Practical C Programming](https://www.amazon.com/Practical-Programming-Does-Nutshell-Handbooks/dp/1565923065)
+
+Courses:
+
+- [Dr Chuck](https://www.cc4e.com/) course about c programming.
+- [Boot.dev](https://boot.dev) A platform for learning programming, like almost that was needed to build the web site that you are right now.
+
+Platforms:
+
+- [GitHub](https://education.github.com/pack) this link is for the student pack, that has a lot of benefits, like a free .me domain name for a year, like this that you are on.
+
+- [Cloudflare](https://cloudflare.com) they have the most diverse offering in terms of domain management, you need a platform to administrate that new shine domain that you own.
+
+- [Oracle Cloud](https://oracle.com) They have an amazing free tier for cloud hosting. The support isn't amazing and the process of creating an account can take some time. Pls don't ruin this !!! 🙏.
+
+- [Novita.ai](https://novita.ai/?ref=yjm4y2q&utm_source=affiliate) A platform that i discoverd last year that allowed me to run LLMs like ChatGPT and also play with the api.
+  They offer GPUs for rent for as low as 10$.(Affiliate link)

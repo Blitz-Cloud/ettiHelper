@@ -62,8 +62,8 @@ func main() {
 		return c.Render("login", fiber.Map{})
 	})
 
-	app.Get("/blog/test", func(c *fiber.Ctx) error {
-		data, err := os.ReadFile("./content/test.md")
+	app.Get("/blog/recommendation-for-english-presentation", func(c *fiber.Ctx) error {
+		data, err := os.ReadFile("./content/englishPresentationRecommendations.md")
 		if err != nil {
 			log.Fatal("Cant read the file")
 		}
