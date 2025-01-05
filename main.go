@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/Blitz-Cloud/ettiHelper/middleware"
 	"github.com/Blitz-Cloud/ettiHelper/routes"
@@ -78,10 +79,13 @@ func main() {
 	// })
 
 	// new login flow
+
+	// microsoft flow
 	routes.RegisterMicrosoftOAuth(app)
 
 	authGroup := app.Group("/", middleware.RouteProtector)
 
+	// cleaning required here
 	authGroup.Get("/post/:day", func(c *fiber.Ctx) error {
 		day := c.Params("day")
 		examplesByDay := make([]string, len(examples))
@@ -154,6 +158,15 @@ func main() {
 		return c.SendString(example.Content)
 	})
 
+	app.Get("/blog/test", func(c *fiber.Ctx) error {
+		data, err := os.ReadFile("./content/test.md")
+		if err != nil {
+			log.Fatal("Cant read the file")
+		}
+		return c.Render("blogPost", fiber.Map{
+			"content": string(Md2Html(data)),
+		})
+	})
 	app.Listen(":3000")
 	fmt.Printf("Hello World")
 }

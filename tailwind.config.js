@@ -15,5 +15,6 @@ module.exports = {
       prefix: "ctp",
       defaultFlavour: "latte",
     }),
+    require("@tailwindcss/typography"),
   ],
 };
