@@ -18,6 +18,7 @@ services:
       - "traefik.http.routers.ettih.middlewares=my-traefikBouncer@file,my-cloudflarewarp@file"
     networks:
       - proxy
+    restart: always
 
 networks:
   proxy:
