@@ -136,13 +136,17 @@ func main() {
 			if examples[i].Name == name && examples[i].Date == date {
 
 				example = &examples[i]
-				spew.Dump(examples[i].Date)
-				previousPost = fmt.Sprintf("%s/%s", examples[i+1].Date, examples[i+1].Name)
 				if i == 0 {
 
 					nextPost = fmt.Sprintf("%s/%s", examples[i].Date, examples[i].Name)
 				} else {
 					nextPost = fmt.Sprintf("%s/%s", examples[i-1].Date, examples[i-1].Name)
+				}
+				if i == len(examples)-1 {
+
+					previousPost = fmt.Sprintf("%s/%s", examples[i].Date, examples[i].Name)
+				} else {
+					previousPost = fmt.Sprintf("%s/%s", examples[i+1].Date, examples[i+1].Name)
 				}
 				break
 			}
