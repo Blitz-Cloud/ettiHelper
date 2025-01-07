@@ -31,6 +31,8 @@ Platforms:
 - [Novita.ai](https://novita.ai/?ref=yjm4y2q&utm_source=affiliate) A platform that i discoverd last year that allowed me to run LLMs like ChatGPT and also play with the api.
   They offer GPUs for rent for as low as 10$.(Affiliate link)
 
+[Here](https://wiki.futo.org/index.php/Introduction_to_a_Self_Managed_Life:_a_13_hour_%26_28_minute_presentation_by_FUTO_software) you can find a guide
+
 Here is a list of apps that can be self-hosted:
 
 - Password manager:
