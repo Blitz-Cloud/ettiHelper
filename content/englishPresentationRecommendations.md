@@ -1,4 +1,4 @@
-# Here is the list of resources that i promised you
+# Here is a list of resources to start your journey
 
 YouTube channels:
 
@@ -30,3 +30,25 @@ Platforms:
 
 - [Novita.ai](https://novita.ai/?ref=yjm4y2q&utm_source=affiliate) A platform that i discoverd last year that allowed me to run LLMs like ChatGPT and also play with the api.
   They offer GPUs for rent for as low as 10$.(Affiliate link)
+
+Here is a list of apps that can be self-hosted:
+
+- Password manager:
+
+1. [Bitwarden](https://bitwarden.com/) At the time of writing I use this service
+2. Recommendation [Passbolt](https://www.passbolt.com/) it has way more futures than Bitwarden
+
+- Reverse proxy:
+
+1. [Traefik](https://traefik.io/traefik/) I am using this because it has integration with [Docker](https://www.docker.com/)
+2. I used this at the beginning[Nginx Proxy Manager](https://nginxproxymanager.com/)
+
+- Alternatives:
+
+1. Google Photos: [Immich](https://immich.app/)
+2. ChatGPT: [OpenWeb Ui](https://openwebui.com/)
+
+- Other:
+
+1. [Minecraft Server](https://docker-minecraft-server.readthedocs.io/en/latest/)
+2. [MailServer](https://docker-mailserver.github.io/docker-mailserver/latest/)
