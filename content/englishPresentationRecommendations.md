@@ -14,6 +14,7 @@ Books(just amazon link, but [linux isos](https://news.ycombinator.com/item?id=27
 
 - [The holy Linux Bible](https://www.amazon.com/Linux-Bible-Christopher-Negus/dp/1119578884)
 - [Practical C Programming](https://www.amazon.com/Practical-Programming-Does-Nutshell-Handbooks/dp/1565923065)
+- [C programming](http://etcm.ticollege.org:4300/E-Books/C-EBooks/C%20Programming%20Absolute%20Beginner%20-%20Perry,%20Greg.pdf)
 
 Courses:
 
