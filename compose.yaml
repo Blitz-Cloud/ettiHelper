@@ -6,8 +6,8 @@ services:
     ports:
       - 3000:3000
     volumes:
-      - "/home/ionut/facultate/seminar:/home/ionut/facultate/seminar:rw"
-      - "/home/ionut/facultate/tipizate:/home/ionut/facultate/tipizate:rw"
+      - "/home/ubuntu/facultate/seminar:/home/ionut/facultate/seminar:rw"
+      - "/home/ubuntu/facultate/tipizate:/home/ionut/facultate/tipizate:rw"
       - "./.env:/app/.env"
     labels:
       - "traefik.enable=true"
