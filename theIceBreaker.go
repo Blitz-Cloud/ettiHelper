@@ -58,8 +58,15 @@ func TipizatExplorer(location string, node *FsNode, examples *[]Tipizat) {
 				Content:      strings.Replace(strings.Trim(string(fileContent), " "), "\n", "", 1),
 				LinkCompiler: fmt.Sprintf("<a href='https://cpp.sh/?source=%s' class='text-ctp-mauve' target='_blank'> Ruleaza codul cu cpp.sh </a>", url.QueryEscape(strings.Replace(strings.Trim(string(fileContent), " "), "void main", "int main", 1))),
 			}
-			*examples = append((*examples), newExample)
-
+			ok := 1
+			for i := 0; i < len(tipizate); i++ {
+				if tipizate[i].Name == newExample.Name {
+					ok = 0
+				}
+			}
+			if ok == 1 {
+				*examples = append((*examples), newExample)
+			}
 			node.files = append(node.files, &newFile)
 		}
 	}
