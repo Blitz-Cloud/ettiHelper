@@ -3,35 +3,21 @@ package main
 import (
 	"fmt"
 	"log"
+	"net/url"
 	"os"
 	"path"
 	"strings"
-	"time"
 )
 
-type File struct {
-	name     string
-	location string
-	content  string
-	parent   *FsNode
+type Tipizat struct {
+	Location     string
+	Date         string
+	Name         string
+	Content      string
+	LinkCompiler string
 }
 
-type FsNode struct {
-	name     string
-	location string
-	dirs     []*FsNode
-	files    []*File
-	parent   *FsNode
-}
-
-type Example struct {
-	Location string
-	Date     string
-	Name     string
-	Content  string
-}
-
-func Explorer(location string, node *FsNode, examples *[]Example) {
+func TipizatExplorer(location string, node *FsNode, examples *[]Tipizat) {
 	dirContent, err := os.ReadDir(location)
 	if err != nil {
 		log.Fatal(err)
@@ -45,7 +31,7 @@ func Explorer(location string, node *FsNode, examples *[]Example) {
 				parent:   node,
 			}
 			node.dirs = append(node.dirs, &newDirNode)
-			Explorer(newDirNode.location, &newDirNode, examples)
+			TipizatExplorer(newDirNode.location, &newDirNode, examples)
 		} else if path.Ext(file.Name()) == ".c" {
 
 			// location needed in order to read the file contents
@@ -63,13 +49,14 @@ func Explorer(location string, node *FsNode, examples *[]Example) {
 				parent:   node,
 			}
 
-			date, _ := time.Parse("2_Jan_2006", (node.parent).name)
-
-			newExample := Example{
-				Location: fileLocation,
-				Name:     node.name,
-				Date:     fmt.Sprintf("%d-%s-%d", date.Day(), date.Month().String()[:3], date.Year()),
-				Content:  strings.Replace(strings.Trim(string(fileContent), " "), "\n", "", 1),
+			rootFolder := (node.parent).name
+			fmt.Println(rootFolder)
+			newExample := Tipizat{
+				Location:     fileLocation,
+				Name:         node.name,
+				Date:         rootFolder,
+				Content:      strings.Replace(strings.Trim(string(fileContent), " "), "\n", "", 1),
+				LinkCompiler: fmt.Sprintf("<a href='https://cpp.sh/?source=%s' class='text-blue-200' target='_blank'> Ruleaza codul cu cpp.sh </a>", url.QueryEscape(strings.Replace(strings.Trim(string(fileContent), " "), "void main", "int main", 1))),
 			}
 			*examples = append((*examples), newExample)
 
