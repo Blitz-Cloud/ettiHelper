@@ -133,6 +133,7 @@ func main() {
 
 	authGroup.Get("/tipizat/:name", func(c *fiber.Ctx) error {
 		fmt.Println("Here")
+		fmt.Println(len(tipizate))
 		name := c.Params("name")
 		example := new(Tipizat)
 		previousPost := ""
@@ -147,7 +148,7 @@ func main() {
 				} else {
 					nextPost = fmt.Sprintf("%s", tipizate[i-1].Name)
 				}
-				if i == len(examples)-1 {
+				if i == len(tipizate)-1 {
 
 					previousPost = fmt.Sprintf("%s", tipizate[i].Name)
 				} else {
