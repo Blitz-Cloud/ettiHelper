@@ -33,7 +33,7 @@ func main() {
 	}
 
 	// initializarea bazei de date
-	Explorer("/home/ionut/facultate/seminar", &exampleRoot, &examples)
+	Explorer("/home/ionut/facultate/seminar", &exampleRoot, ".c", &examples, CopyPasteParser)
 	TipizatExplorer("/home/ionut/facultate/tipizate", &tipizateRoot, &tipizate)
 	spew.Dump(tipizate[0])
 	SortDescending(&examples)

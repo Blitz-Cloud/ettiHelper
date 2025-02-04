@@ -82,7 +82,7 @@ func ExplorerLegacy(location string, node *FsNode, examples *[]Example) {
 
 type FactoryFunc[T any] func(*File, *[]T)
 
-func copyPasteParser(file *File, contentArray *[]Example) {
+func CopyPasteParser(file *File, contentArray *[]Example) {
 	if file.name == "main.c" {
 
 		unParsedDate := ((file.parent).parent).name
@@ -93,7 +93,7 @@ func copyPasteParser(file *File, contentArray *[]Example) {
 		spew.Dump(date)
 		newExample := Example{
 			Location: file.location,
-			Name:     file.name,
+			Name:     (file.parent).name,
 			Date:     fmt.Sprintf("%d-%s-%d", date.Day(), date.Month().String()[:3], date.Year()),
 			Content:  strings.Replace(strings.Trim(string(file.content), " "), "\n", "", 1),
 		}
