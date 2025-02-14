@@ -7,7 +7,6 @@ import (
 
 	"github.com/Blitz-Cloud/ettiHelper/middleware"
 	"github.com/Blitz-Cloud/ettiHelper/routes"
-	"github.com/davecgh/go-spew/spew"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/template/mustache/v2"
@@ -33,9 +32,8 @@ func main() {
 	}
 
 	// initializarea bazei de date
-	Explorer("/home/ionut/facultate/seminar", &exampleRoot, ".c", &examples, CopyPasteParser)
-	TipizatExplorer("/home/ionut/facultate/tipizate", &tipizateRoot, &tipizate)
-	spew.Dump(tipizate[0])
+	Explorer("/home/ionut/facultate/seminar", &exampleRoot, ".c", &examples, LabsContentParser)
+	Explorer("/home/ionut/facultate/tipizate", &tipizateRoot, ".c", &tipizate, ClangCodeExamplesParser)
 	SortDescending(&examples)
 
 	// initializing the fiber app and setting the view engine

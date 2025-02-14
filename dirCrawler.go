@@ -3,12 +3,11 @@ package main
 import (
 	"fmt"
 	"log"
+	"net/url"
 	"os"
 	"path"
 	"strings"
 	"time"
-
-	"github.com/davecgh/go-spew/spew"
 )
 
 type File struct {
@@ -33,64 +32,27 @@ type Example struct {
 	Content  string
 }
 
-func ExplorerLegacy(location string, node *FsNode, examples *[]Example) {
-	dirContent, err := os.ReadDir(location)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	for _, file := range dirContent {
-		if file.IsDir() {
-			newDirNode := FsNode{
-				name:     file.Name(),
-				location: fmt.Sprintf("%s/%s", location, file.Name()),
-				parent:   node,
-			}
-			node.dirs = append(node.dirs, &newDirNode)
-			ExplorerLegacy(newDirNode.location, &newDirNode, examples)
-		} else if path.Ext(file.Name()) == ".c" {
-
-			// location needed in order to read the file contents
-			fileLocation := fmt.Sprintf("%s/%s", location, file.Name())
-			fileContent, err := os.ReadFile(fileLocation)
-
-			if err != nil {
-				log.Fatal(err)
-			}
-
-			newFile := File{
-				name:     file.Name(),
-				location: fileLocation,
-				content:  string(fileContent),
-				parent:   node,
-			}
-
-			date, _ := time.Parse("2_Jan_2006", (node.parent).name)
-
-			newExample := Example{
-				Location: fileLocation,
-				Name:     node.name,
-				Date:     fmt.Sprintf("%d-%s-%d", date.Day(), date.Month().String()[:3], date.Year()),
-				Content:  strings.Replace(strings.Trim(string(fileContent), " "), "\n", "", 1),
-			}
-			*examples = append((*examples), newExample)
-
-			node.files = append(node.files, &newFile)
-		}
-	}
+type Tipizat struct {
+	Location     string
+	Date         string
+	Name         string
+	Content      string
+	LinkCompiler string
 }
-
 type FactoryFunc[T any] func(*File, *[]T)
 
-func CopyPasteParser(file *File, contentArray *[]Example) {
+// acesta este un parser de continut si este folosit pentru a extrage datele necesare despre un
+// laborator
+// data este exrasa dupa urmatorul model /data/numeleExercitiu/main.c
+func LabsContentParser(file *File, contentArray *[]Example) {
 	if file.name == "main.c" {
-
+		// se efectueaza citirea si procesarea datei
 		unParsedDate := ((file.parent).parent).name
 		date, err := time.Parse("2_Jan_2006", unParsedDate)
+
 		if err != nil {
 			log.Fatal(err)
 		}
-		spew.Dump(date)
 		newExample := Example{
 			Location: file.location,
 			Name:     (file.parent).name,
@@ -101,6 +63,40 @@ func CopyPasteParser(file *File, contentArray *[]Example) {
 	}
 }
 
+// acesta este un parser de continut si este folosit pentru a extrage datele despre tipizatele
+// de pe primul semestru la IETTI PCLP
+// bucla for de mai jos este folosita pentru a nu adauga de mai multe ori acelasi tipizat
+func ClangCodeExamplesParser(file *File, contentArray *[]Tipizat) {
+	if file.name == "main.c" {
+		rootFolder := (file.parent).name
+		newTipizat := Tipizat{
+			Location:     file.location,
+			Name:         file.name,
+			Date:         rootFolder,
+			Content:      strings.Replace(strings.Trim(string(file.content), " "), "\n", "", 1),
+			LinkCompiler: fmt.Sprintf("<a href='https://cpp.sh/?source=%s' class='text-ctp-mauve' target='_blank'> Ruleaza codul cu cpp.sh </a>", url.QueryEscape(strings.Replace(strings.Trim(string(file.content), " "), "void main", "int main", 1))),
+		}
+		ok := 1
+		for i := 0; i < len(tipizate); i++ {
+			if tipizate[i].Name == newTipizat.Name {
+				ok = 0
+			}
+		}
+		if ok == 1 {
+			*contentArray = append((*contentArray), newTipizat)
+		}
+	}
+}
+
+// explorer este menit sa gaseasca in mod recursiv toate fisierele cu o anumita extensie si sa
+// creeze in memorie un arbore al memorie
+// acesta functie cel mai probabil va mai suferi modificari majore odata cu adaugarea metaDatelor
+// pentru fiecare post insa acolo unde acestea nu pot fi create si sau adaugate aceasta functie
+// isi face treaba
+// pe langa ceea ce am scris mai sus, prin intermediul unei singure rulari, este posibil,
+// crearea si extragerea datelor necesare din fiecare fiesier
+// aceasta functie se realizeaza prin contentArray si functia parser care pot primi orice tip de
+// date
 func Explorer[T any](location string, node *FsNode, extension string, contentArray *[]T, parser FactoryFunc[T]) {
 	dirContent, err := os.ReadDir(location)
 	if err != nil {
@@ -108,6 +104,8 @@ func Explorer[T any](location string, node *FsNode, extension string, contentArr
 	}
 
 	for _, file := range dirContent {
+		// atat timp cat gasim un folder acesta va fi adaugat in arbore
+		// daca extensia este cea dorita atunci fisierul este citit si apoi parserul este invocat
 		if file.IsDir() {
 			newDirNode := FsNode{
 				name:     file.Name(),
