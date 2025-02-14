@@ -1,4 +1,4 @@
-package main
+package utils
 
 import (
 	"fmt"
@@ -67,7 +67,7 @@ func LabsContentParser(file *File, contentArray *[]Example) {
 // de pe primul semestru la IETTI PCLP
 // bucla for de mai jos este folosita pentru a nu adauga de mai multe ori acelasi tipizat
 func ClangCodeExamplesParser(file *File, contentArray *[]Tipizat) {
-	if file.name == "main.c" {
+	if path.Ext(file.name) == ".c" {
 		rootFolder := (file.parent).name
 		newTipizat := Tipizat{
 			Location:     file.location,

@@ -7,7 +7,6 @@ import (
 	"os"
 	"time"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
 	"golang.org/x/oauth2"
@@ -34,7 +33,6 @@ func RegisterMicrosoftOAuth(app *fiber.App) {
 		Endpoint:     microsoft.AzureADEndpoint("upb.ro"),
 	}
 	verifier := oauth2.GenerateVerifier()
-	spew.Dump(oauth2Config)
 
 	router := app.Group("/auth/microsoft")
 	router.Get("/", func(c *fiber.Ctx) error {

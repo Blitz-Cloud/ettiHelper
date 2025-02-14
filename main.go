@@ -1,12 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 
-	"github.com/Blitz-Cloud/ettiHelper/middleware"
 	"github.com/Blitz-Cloud/ettiHelper/routes"
+	"github.com/Blitz-Cloud/ettiHelper/utils"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/template/mustache/v2"
@@ -19,22 +18,14 @@ type Post struct {
 	content string
 }
 
-var exampleRoot FsNode
-var examples []Example
-var tipizateRoot FsNode
-var tipizate []Tipizat
-
 func main() {
 
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Env file not loaded or missing")
 	}
-
+	serverLogger := log.New(os.Stdout, "INFO: ", log.Ldate|log.Ltime)
 	// initializarea bazei de date
-	Explorer("/home/ionut/facultate/seminar", &exampleRoot, ".c", &examples, LabsContentParser)
-	Explorer("/home/ionut/facultate/tipizate", &tipizateRoot, ".c", &tipizate, ClangCodeExamplesParser)
-	SortDescending(&examples)
 
 	// initializing the fiber app and setting the view engine
 	engine := mustache.New("./views", ".html")
@@ -59,7 +50,7 @@ func main() {
 	app.Get("/login", func(c *fiber.Ctx) error {
 		date := c.Cookies("testC")
 		if date != "" {
-			return c.Redirect("/posts")
+			return c.Redirect("/labs")
 		}
 		return c.Render("login", fiber.Map{})
 	})
@@ -71,7 +62,7 @@ func main() {
 			log.Fatal("Cant read the file")
 		}
 		return c.Render("blogPost", fiber.Map{
-			"content": string(Md2Html(data)),
+			"content": string(utils.Md2Html(data)),
 		})
 	})
 	// app.Post("/login", func(c *fiber.Ctx) error {
@@ -95,8 +86,7 @@ func main() {
 
 	// microsoft flow
 	routes.RegisterMicrosoftOAuth(app)
-
-	authGroup := app.Group("/", middleware.RouteProtector)
+	routes.RegisterLabsRoutes(app, serverLogger)
 
 	// cleaning required here
 	// authGroup.Get("/post/:day", func(c *fiber.Ctx) error {
@@ -111,133 +101,5 @@ func main() {
 	// 	return c.Render("posts", fiber.Map{"posts": examplesByDay})
 	// })
 
-	authGroup.Get("/tipizate", func(c *fiber.Ctx) error {
-		days := make([]string, len(tipizate))
-		for _, file := range tipizate {
-			ok := 1
-			for i := 0; i < len(days); i++ {
-				if days[i] == file.Date {
-					ok = 0
-				}
-			}
-			if ok == 1 {
-				days = append(days, file.Date)
-			}
-		}
-
-		return c.Render("tipizate", fiber.Map{"posts": tipizate,
-			"Title": "Posts"})
-	})
-
-	authGroup.Get("/tipizat/:name", func(c *fiber.Ctx) error {
-		fmt.Println("Here")
-		fmt.Println(len(tipizate))
-		name := c.Params("name")
-		example := new(Tipizat)
-		previousPost := ""
-		nextPost := ""
-		for i := 0; i < len(tipizate); i++ {
-			if tipizate[i].Name == name {
-
-				example = &tipizate[i]
-				if i == 0 {
-
-					nextPost = fmt.Sprintf("%s", tipizate[i].Name)
-				} else {
-					nextPost = fmt.Sprintf("%s", tipizate[i-1].Name)
-				}
-				if i == len(tipizate)-1 {
-
-					previousPost = fmt.Sprintf("%s", tipizate[i].Name)
-				} else {
-					previousPost = fmt.Sprintf("%s", tipizate[i+1].Name)
-				}
-				break
-			}
-		}
-
-		return c.Render("tipizat", fiber.Map{
-			"post":         example,
-			"previousPost": previousPost,
-			"nextPost":     nextPost,
-		})
-	})
-	authGroup.Get("/posts", func(c *fiber.Ctx) error {
-		days := make([]string, len(examples))
-		for _, file := range examples {
-			ok := 1
-			for i := 0; i < len(days); i++ {
-				if days[i] == file.Date {
-					ok = 0
-				}
-			}
-			if ok == 1 {
-				days = append(days, file.Date)
-			}
-		}
-
-		return c.Render("posts", fiber.Map{"posts": examples,
-			"Title": "Posts"})
-	})
-
-	authGroup.Get("/post/:date/:name", func(c *fiber.Ctx) error {
-		date := c.Params("date")
-		name := c.Params("name")
-		example := new(Example)
-		previousPost := ""
-		nextPost := ""
-		for i := 0; i < len(examples); i++ {
-			if examples[i].Name == name && examples[i].Date == date {
-
-				example = &examples[i]
-				if i == 0 {
-
-					nextPost = fmt.Sprintf("%s/%s", examples[i].Date, examples[i].Name)
-				} else {
-					nextPost = fmt.Sprintf("%s/%s", examples[i-1].Date, examples[i-1].Name)
-				}
-				if i == len(examples)-1 {
-
-					previousPost = fmt.Sprintf("%s/%s", examples[i].Date, examples[i].Name)
-				} else {
-					previousPost = fmt.Sprintf("%s/%s", examples[i+1].Date, examples[i+1].Name)
-				}
-				break
-			}
-		}
-
-		return c.Render("post", fiber.Map{
-			"post":         example,
-			"previousPost": previousPost,
-			"nextPost":     nextPost,
-		})
-	})
-	authGroup.Get("/api/post/:date/:name", func(c *fiber.Ctx) error {
-		date := c.Params("date")
-		name := c.Params("name")
-		example := new(Example)
-		for i := 0; i < len(examples); i++ {
-			if examples[i].Name == name && examples[i].Date == date {
-
-				example = &examples[i]
-				break
-			}
-		}
-		return c.SendString(example.Content)
-	})
-
-	authGroup.Get("/api/tipizat/:name", func(c *fiber.Ctx) error {
-		name := c.Params("name")
-		example := new(Tipizat)
-		for i := 0; i < len(tipizate); i++ {
-			if tipizate[i].Name == name {
-
-				example = &tipizate[i]
-				break
-			}
-		}
-		return c.SendString(example.Content)
-	})
 	app.Listen(":3000")
-	fmt.Printf("Hello World")
 }
