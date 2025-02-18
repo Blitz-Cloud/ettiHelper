@@ -55,9 +55,9 @@ type FactoryFunc[T any] func(*File, *[]T)
 // laborator
 // data este exrasa dupa urmatorul model /data/numeleExercitiu/main.c
 func LabsContentParser(file *File, contentArray *[]BlogPost) {
-	if file.name == "main.c" {
+	if file.Name == "main.c" {
 		// se efectueaza citirea si procesarea datei
-		unParsedDate := ((file.parent).parent).name
+		unParsedDate := ((file.Parent).Parent).Name
 		date, err := time.Parse("2_Jan_2006", unParsedDate)
 
 		if err != nil {
@@ -65,10 +65,10 @@ func LabsContentParser(file *File, contentArray *[]BlogPost) {
 		}
 		newExample := BlogPost{
 			// Location: file.location,
-			Title: (file.parent).name,
+			Title: (file.Parent).Name,
 			Date:  fmt.Sprintf("%d-%s-%d", date.Day(), date.Month().String()[:3], date.Year()),
 			// Content: strings.Replace(strings.Trim(string(file.content), " "), "\n", "", 1),
-			Content: string(file.content),
+			Content: string(file.Content),
 		}
 		*contentArray = append((*contentArray), newExample)
 	}
@@ -78,13 +78,13 @@ func LabsContentParser(file *File, contentArray *[]BlogPost) {
 // de pe primul semestru la IETTI PCLP
 // bucla for de mai jos este folosita pentru a nu adauga de mai multe ori acelasi tipizat
 func ClangCodeExamplesParser(file *File, contentArray *[]BlogPost) {
-	if path.Ext(file.name) == ".c" {
-		rootFolder := (file.parent).name
+	if path.Ext(file.Name) == ".c" {
+		rootFolder := (file.Parent).Name
 		newTipizat := BlogPost{
 			// Location:     file.location,
-			Title:   file.name,
+			Title:   file.Name,
 			Date:    rootFolder,
-			Content: strings.Replace(strings.Trim(string(file.content), " "), "\n", "", 1),
+			Content: strings.Replace(strings.Trim(string(file.Content), " "), "\n", "", 1),
 			// LinkCompiler: fmt.Sprintf("<a href='https://cpp.sh/?source=%s' class='text-ctp-mauve' target='_blank'> Ruleaza codul cu cpp.sh </a>", url.QueryEscape(strings.Replace(strings.Trim(string(file.content), " "), "void main", "int main", 1))),
 		}
 		ok := 1
@@ -100,7 +100,7 @@ func ClangCodeExamplesParser(file *File, contentArray *[]BlogPost) {
 }
 
 func MdContentParser(file *File, contentArray *[]BlogPost) {
-	metaData, content := ParseMdString(file.content)
+	metaData, content := ParseMdString(file.Content)
 	post := BlogPost{
 		Title:       metaData.Title,
 		Date:        metaData.Date,
@@ -132,12 +132,12 @@ func Explorer[T any](location string, node *FsNode, extension string, contentArr
 		// daca extensia este cea dorita atunci fisierul este citit si apoi parserul este invocat
 		if file.IsDir() {
 			newDirNode := FsNode{
-				name:     file.Name(),
-				location: fmt.Sprintf("%s/%s", location, file.Name()),
-				parent:   node,
+				Name:     file.Name(),
+				Location: fmt.Sprintf("%s/%s", location, file.Name()),
+				Parent:   node,
 			}
 			node.dirs = append(node.dirs, &newDirNode)
-			Explorer(newDirNode.location, &newDirNode, extension, contentArray, parser)
+			Explorer(newDirNode.Location, &newDirNode, extension, contentArray, parser)
 		} else if path.Ext(file.Name()) == extension {
 			fileLocation := fmt.Sprintf("%s/%s", location, file.Name())
 			fileContent, err := os.ReadFile(fileLocation)
@@ -147,12 +147,12 @@ func Explorer[T any](location string, node *FsNode, extension string, contentArr
 			}
 
 			newFile := File{
-				name:     file.Name(),
-				location: fileLocation,
-				content:  string(fileContent),
-				parent:   node,
+				Name:     file.Name(),
+				Location: fileLocation,
+				Content:  string(fileContent),
+				Parent:   node,
 			}
-			node.files = append(node.files, &newFile)
+			node.Files = append(node.Files, &newFile)
 			parser(&newFile, contentArray)
 		}
 
