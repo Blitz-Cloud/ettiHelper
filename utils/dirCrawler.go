@@ -65,9 +65,10 @@ func LabsContentParser(file *File, contentArray *[]BlogPost) {
 		}
 		newExample := BlogPost{
 			// Location: file.location,
-			Title:   (file.parent).name,
-			Date:    fmt.Sprintf("%d-%s-%d", date.Day(), date.Month().String()[:3], date.Year()),
-			Content: strings.Replace(strings.Trim(string(file.content), " "), "\n", "", 1),
+			Title: (file.parent).name,
+			Date:  fmt.Sprintf("%d-%s-%d", date.Day(), date.Month().String()[:3], date.Year()),
+			// Content: strings.Replace(strings.Trim(string(file.content), " "), "\n", "", 1),
+			Content: string(file.content),
 		}
 		*contentArray = append((*contentArray), newExample)
 	}
