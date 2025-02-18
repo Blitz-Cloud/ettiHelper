@@ -6,7 +6,6 @@ import (
 
 	"github.com/Blitz-Cloud/ettiHelper/middleware"
 	"github.com/Blitz-Cloud/ettiHelper/utils"
-	"github.com/davecgh/go-spew/spew"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -18,7 +17,6 @@ func RegisterLabsRoutes(app *fiber.App, serverLogger *log.Logger) {
 	var examples []utils.BlogPost
 	utils.Explorer("/home/ionut/facultate/seminar", &exampleRoot, ".c", &examples, utils.LabsContentParser)
 	utils.SortBlogPostsInDescendingOrderByDate(&examples)
-	spew.Dump(examples)
 	serverLogger.Printf("Explorer a gasit %d coduri scris la laboratoare", len(examples))
 
 	authGroup := app.Group("/", middleware.RouteProtector)

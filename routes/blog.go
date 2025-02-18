@@ -7,7 +7,6 @@ import (
 	"os"
 
 	"github.com/Blitz-Cloud/ettiHelper/utils"
-	"github.com/davecgh/go-spew/spew"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -17,7 +16,6 @@ func RegisterBlogRoutes(app *fiber.App, serverLogger *log.Logger) {
 	utils.Explorer("./content", &blogPostRoot, ".md", &blogPosts, utils.MdContentParser)
 	serverLogger.Printf("Explorer found %d blog posts", len(blogPosts))
 	utils.SortBlogPostsInDescendingOrderByDate(&blogPosts)
-	spew.Dump(blogPosts)
 	serverLogger.Println("Finished sorting blog posts")
 	// placeholder for content
 	app.Get("/blog/recommendation-for-english-presentation", func(c *fiber.Ctx) error {
