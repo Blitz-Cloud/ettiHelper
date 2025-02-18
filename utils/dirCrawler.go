@@ -10,18 +10,18 @@ import (
 )
 
 type File struct {
-	name     string
-	location string
-	content  string
-	parent   *FsNode
+	Name     string
+	Location string
+	Content  string
+	Parent   *FsNode
 }
 
 type FsNode struct {
-	name     string
-	location string
+	Name     string
+	Location string
 	dirs     []*FsNode
-	files    []*File
-	parent   *FsNode
+	Files    []*File
+	Parent   *FsNode
 }
 
 type Example struct {
