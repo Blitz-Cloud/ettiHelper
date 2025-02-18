@@ -10,7 +10,7 @@ import (
 )
 
 var tipizateRoot utils.FsNode
-var tipizate []utils.Tipizat
+var tipizate []utils.BlogPost
 
 func RegisterTipizateRoutes(app *fiber.App, serverLogger *log.Logger) {
 
@@ -33,48 +33,49 @@ func RegisterTipizateRoutes(app *fiber.App, serverLogger *log.Logger) {
 			}
 		}
 
-		return c.Render("tipizate", fiber.Map{"posts": tipizate,
-			"Title": "Posts"})
+		return c.Render("Posts", fiber.Map{"posts": tipizate,
+			"Title": "Posts", "linkTo": "tipizat"})
 	})
 
-	authGroup.Get("/tipizat/:name", func(c *fiber.Ctx) error {
+	authGroup.Get("/tipizat/:date/:name", func(c *fiber.Ctx) error {
 		fmt.Println("Here")
 		fmt.Println(len(tipizate))
 		name := c.Params("name")
-		example := new(utils.Tipizat)
+		example := new(utils.BlogPost)
 		previousPost := ""
 		nextPost := ""
 		for i := 0; i < len(tipizate); i++ {
-			if tipizate[i].Name == name {
+			if tipizate[i].Title == name {
 
 				example = &tipizate[i]
 				if i == 0 {
 
-					nextPost = fmt.Sprintf("%s", tipizate[i].Name)
+					nextPost = fmt.Sprintf("%s/%s", tipizate[i].Date, tipizate[i].Title)
 				} else {
-					nextPost = fmt.Sprintf("%s", tipizate[i-1].Name)
+					nextPost = fmt.Sprintf("%s/%s", tipizate[i-1].Date, tipizate[i-1].Title)
 				}
 				if i == len(tipizate)-1 {
 
-					previousPost = fmt.Sprintf("%s", tipizate[i].Name)
+					previousPost = fmt.Sprintf("%s/%s", tipizate[i].Date, tipizate[i].Title)
 				} else {
-					previousPost = fmt.Sprintf("%s", tipizate[i+1].Name)
+					previousPost = fmt.Sprintf("%s/%s", tipizate[i+1].Date, tipizate[i+1].Title)
 				}
 				break
 			}
 		}
 
-		return c.Render("tipizat", fiber.Map{
+		return c.Render("lab", fiber.Map{
 			"post":         example,
+			"linkTo":       "tipizat",
 			"previousPost": previousPost,
 			"nextPost":     nextPost,
 		})
 	})
 	authGroup.Get("/api/tipizat/:name", func(c *fiber.Ctx) error {
 		name := c.Params("name")
-		example := new(utils.Tipizat)
+		example := new(utils.BlogPost)
 		for i := 0; i < len(tipizate); i++ {
-			if tipizate[i].Name == name {
+			if tipizate[i].Title == name {
 
 				example = &tipizate[i]
 				break

@@ -5,17 +5,19 @@
         {{#post}}
         <div class="dark:text-white flex justify-between items-center">
           <div>
-            <h1>{{Name}}</h1>
+            <h1>{{Title}}</h1>
             <p>{{Date}}</p>
           </div>
           <div class="flex min-w-max">
             <div class="mx-1">
-              <a id="nextPostBtn" href="/post/{{previousPost}}"
+              <a id="nextPostBtn" href="/{{linkTo}}/{{previousPost}}"
                 >Previous post</a
               >
             </div>
             <div class="mx-1">
-              <a id="previousPostBtn" href="/post/{{nextPost}}">Next post</a>
+              <a id="previousPostBtn" href="/{{linkTo}}/{{nextPost}}"
+                >Next post</a
+              >
             </div>
           </div>
         </div>

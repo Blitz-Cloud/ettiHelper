@@ -1,3 +1,10 @@
+---
+title: Self-hosting recommendations
+date: "2-Jan-2025"
+description: "A short list of resources for self-hosting or starting tinkering with code"
+tags: ["self-hosting", "resources"]
+---
+
 # Here is a list of resources to start your journey
 
 YouTube channels:

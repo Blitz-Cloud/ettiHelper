@@ -3,6 +3,13 @@ module github.com/Blitz-Cloud/ettiHelper
 go 1.23.3
 
 require (
+	github.com/gomarkdown/markdown v0.0.0-20241205020045-f7e15b2f3e62
+	golang.org/x/oauth2 v0.24.0
+)
+
+require (
+	github.com/BurntSushi/toml v0.3.1 // indirect
+	github.com/adrg/frontmatter v0.2.0 // indirect
 	github.com/andybalholm/brotli v1.0.5 // indirect
 	github.com/cbroglie/mustache v1.4.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
@@ -11,7 +18,6 @@ require (
 	github.com/gofiber/template v1.8.3 // indirect
 	github.com/gofiber/template/mustache/v2 v2.0.12 // indirect
 	github.com/gofiber/utils v1.1.0 // indirect
-	github.com/gomarkdown/markdown v0.0.0-20241205020045-f7e15b2f3e62
 	github.com/google/uuid v1.5.0 // indirect
 	github.com/gorilla/schema v1.1.0 // indirect
 	github.com/joho/godotenv v1.5.1 // indirect
@@ -23,6 +29,6 @@ require (
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.51.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
-	golang.org/x/oauth2 v0.24.0
 	golang.org/x/sys v0.15.0 // indirect
+	gopkg.in/yaml.v2 v2.4.0 // indirect
 )

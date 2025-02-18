@@ -75,7 +75,7 @@ func RegisterMicrosoftOAuth(app *fiber.App) {
 			Expires:  time.Now().Add(7 * 24 * time.Hour),
 			HTTPOnly: true,
 		})
-		return c.Redirect("/posts")
+		return c.Redirect("/labs")
 
 	})
 

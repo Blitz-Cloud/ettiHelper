@@ -3,7 +3,6 @@ package utils
 import (
 	"fmt"
 	"log"
-	"net/url"
 	"os"
 	"path"
 	"strings"
@@ -26,25 +25,36 @@ type FsNode struct {
 }
 
 type Example struct {
-	Location string
-	Date     string
-	Name     string
-	Content  string
+	// Location string
+	Name    string
+	Date    string
+	Content string
 }
 
 type Tipizat struct {
-	Location     string
-	Date         string
+	// Location     string
 	Name         string
+	Date         string
+	Tags         []string
 	Content      string
 	LinkCompiler string
 }
+
+type BlogPost struct {
+	Title       string
+	Date        string
+	Tags        []string
+	Description string
+	Content     string
+	HtmlContent string
+}
+
 type FactoryFunc[T any] func(*File, *[]T)
 
 // acesta este un parser de continut si este folosit pentru a extrage datele necesare despre un
 // laborator
 // data este exrasa dupa urmatorul model /data/numeleExercitiu/main.c
-func LabsContentParser(file *File, contentArray *[]Example) {
+func LabsContentParser(file *File, contentArray *[]BlogPost) {
 	if file.name == "main.c" {
 		// se efectueaza citirea si procesarea datei
 		unParsedDate := ((file.parent).parent).name
@@ -53,11 +63,11 @@ func LabsContentParser(file *File, contentArray *[]Example) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		newExample := Example{
-			Location: file.location,
-			Name:     (file.parent).name,
-			Date:     fmt.Sprintf("%d-%s-%d", date.Day(), date.Month().String()[:3], date.Year()),
-			Content:  strings.Replace(strings.Trim(string(file.content), " "), "\n", "", 1),
+		newExample := BlogPost{
+			// Location: file.location,
+			Title:   (file.parent).name,
+			Date:    fmt.Sprintf("%d-%s-%d", date.Day(), date.Month().String()[:3], date.Year()),
+			Content: strings.Replace(strings.Trim(string(file.content), " "), "\n", "", 1),
 		}
 		*contentArray = append((*contentArray), newExample)
 	}
@@ -66,19 +76,19 @@ func LabsContentParser(file *File, contentArray *[]Example) {
 // acesta este un parser de continut si este folosit pentru a extrage datele despre tipizatele
 // de pe primul semestru la IETTI PCLP
 // bucla for de mai jos este folosita pentru a nu adauga de mai multe ori acelasi tipizat
-func ClangCodeExamplesParser(file *File, contentArray *[]Tipizat) {
+func ClangCodeExamplesParser(file *File, contentArray *[]BlogPost) {
 	if path.Ext(file.name) == ".c" {
 		rootFolder := (file.parent).name
-		newTipizat := Tipizat{
-			Location:     file.location,
-			Name:         file.name,
-			Date:         rootFolder,
-			Content:      strings.Replace(strings.Trim(string(file.content), " "), "\n", "", 1),
-			LinkCompiler: fmt.Sprintf("<a href='https://cpp.sh/?source=%s' class='text-ctp-mauve' target='_blank'> Ruleaza codul cu cpp.sh </a>", url.QueryEscape(strings.Replace(strings.Trim(string(file.content), " "), "void main", "int main", 1))),
+		newTipizat := BlogPost{
+			// Location:     file.location,
+			Title:   file.name,
+			Date:    rootFolder,
+			Content: strings.Replace(strings.Trim(string(file.content), " "), "\n", "", 1),
+			// LinkCompiler: fmt.Sprintf("<a href='https://cpp.sh/?source=%s' class='text-ctp-mauve' target='_blank'> Ruleaza codul cu cpp.sh </a>", url.QueryEscape(strings.Replace(strings.Trim(string(file.content), " "), "void main", "int main", 1))),
 		}
 		ok := 1
 		for i := 0; i < len(*contentArray); i++ {
-			if (*contentArray)[i].Name == newTipizat.Name {
+			if (*contentArray)[i].Title == newTipizat.Title {
 				ok = 0
 			}
 		}
@@ -86,6 +96,19 @@ func ClangCodeExamplesParser(file *File, contentArray *[]Tipizat) {
 			*contentArray = append((*contentArray), newTipizat)
 		}
 	}
+}
+
+func MdContentParser(file *File, contentArray *[]BlogPost) {
+	metaData, content := ParseMdString(file.content)
+	post := BlogPost{
+		Title:       metaData.Title,
+		Date:        metaData.Date,
+		Description: metaData.Description,
+		Tags:        metaData.Tags,
+		Content:     content,
+		HtmlContent: string(Md2Html([]byte(content))),
+	}
+	*contentArray = append((*contentArray), post)
 }
 
 // explorer este menit sa gaseasca in mod recursiv toate fisierele cu o anumita extensie si sa
