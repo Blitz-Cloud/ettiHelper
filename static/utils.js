@@ -18,10 +18,10 @@ async function getCodeToCopy(string) {
   }
 }
 
-async function getCodeToCopyTipizat(string) {
+async function copyToClipboardInnerText(this) {
   toast = document.getElementById("toast-default");
-  console.log(toast);
   toast.classList.remove("transition-opacity", "opacity-0", "hidden");
+
   try {
     const response = await fetch("/api/tipizat/" + string);
     if (!response.ok) {
@@ -37,3 +37,4 @@ async function getCodeToCopyTipizat(string) {
     console.error(error.message);
   }
 }
+

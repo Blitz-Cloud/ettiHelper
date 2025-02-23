@@ -1,12 +1,12 @@
-<main>
+<main class="dark:text-white">
   <div class="max-w-3xl px-4 pt-6 lg:pt-10 pb-12 sm:px-6 lg:px-8 mx-auto">
     <div class="max-w-2xl">
-      <div class="space-y-5 md:space-y-8">
+      <div class="space-y-5 md:space-y-8 prose prose-invert">
         {{#post}}
         <div class="dark:text-white flex justify-between items-center">
           <div>
-            <h1>{{Title}}</h1>
-            <p>{{Date}}</p>
+            <p class="not-prose">{{Title}}</p>
+            <p class="not-prose">{{Date}}</p>
           </div>
           <div class="flex min-w-max">
             <div class="mx-1">
@@ -21,27 +21,27 @@
             </div>
           </div>
         </div>
-        <div class="relative">
+        <!-- <div class="relative">
           <button
             id="copyCode"
             class="absolute right-3 top-[-15px] px-3 py-1 border border=[3px] border-ctp-rosewater rounded-lg bg-ctp-base text-ctp-mauve font-normal text-base"
-            onclick="getCodeToCopy('{{Date}}/{{Name}}')"
+            onclick="copyToClipboardInnerText(this)"
           >
             Copy Code
-          </button>
-          <!-- prettier-ignore -->
-          <div
+          </button> -->
+        <!-- prettier-ignore -->
+        <!-- <div
             id="codeBlock"
             class=""
-          >{{Content}}</div>
-        </div>
-        {{/post}}
+          ></div>
+        </div> -->
+        {{{HtmlContent}}} {{/post}}
       </div>
     </div>
   </div>
 </main>
 
-<script type="module">
+<!-- <script type="module">
   import { codeToHtml, codeToTokens } from "https://esm.sh/shiki@1.24.4";
 
   const codeBlock = document.getElementById("codeBlock");
@@ -53,4 +53,8 @@
   codeBlock.style.background = codeBlock.childNodes[0].style.background;
   console.log(codeBlock.style.background);
   console.log(codeBlock.childNodes[0].style);
+</script> -->
+
+<script>
+  codeBlocks = document.getElementsByTagName("pre");
 </script>

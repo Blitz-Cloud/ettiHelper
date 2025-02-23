@@ -3,10 +3,12 @@ package routes
 import (
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/Blitz-Cloud/ettiHelper/middleware"
 	"github.com/Blitz-Cloud/ettiHelper/utils"
 	"github.com/gofiber/fiber/v2"
+	"github.com/joho/godotenv"
 )
 
 func RegisterLabsRoutes(app *fiber.App, serverLogger *log.Logger) {
@@ -15,9 +17,19 @@ func RegisterLabsRoutes(app *fiber.App, serverLogger *log.Logger) {
 	// sper sa pot face transferul spre o baza de date adevarata
 	var exampleRoot utils.FsNode
 	var examples []utils.BlogPost
-	utils.Explorer("/home/ionut/facultate/seminar", &exampleRoot, ".c", &examples, utils.LabsContentParser)
+
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading env file")
+	}
+
+	labsFolder := os.Getenv("labsFolder")
+	serverLogger.Printf("The labs folder location is set to: %s", labsFolder)
+
+	utils.Explorer(labsFolder, &exampleRoot, ".md", &examples, utils.MdContentParser)
+	serverLogger.Printf("Explorer a gasit %d coduri scrise la laboratoare", len(examples))
 	utils.SortBlogPostsInDescendingOrderByDate(&examples)
-	serverLogger.Printf("Explorer a gasit %d coduri scris la laboratoare", len(examples))
+	serverLogger.Println("Finished sorting labs posts")
 
 	authGroup := app.Group("/", middleware.RouteProtector)
 
@@ -67,7 +79,6 @@ func RegisterLabsRoutes(app *fiber.App, serverLogger *log.Logger) {
 				break
 			}
 		}
-
 		return c.Render("lab", fiber.Map{
 			"post":         example,
 			"linkTo":       "lab",

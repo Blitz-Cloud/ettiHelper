@@ -3,18 +3,27 @@ package routes
 import (
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/Blitz-Cloud/ettiHelper/middleware"
 	"github.com/Blitz-Cloud/ettiHelper/utils"
 	"github.com/gofiber/fiber/v2"
+	"github.com/joho/godotenv"
 )
 
-var tipizateRoot utils.FsNode
-var tipizate []utils.BlogPost
-
 func RegisterTipizateRoutes(app *fiber.App, serverLogger *log.Logger) {
+	var tipizateRoot utils.FsNode
+	var tipizate []utils.BlogPost
 
-	utils.Explorer("/home/ionut/facultate/tipizate", &tipizateRoot, ".c", &tipizate, utils.ClangCodeExamplesParser)
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading env file")
+	}
+
+	tipizateFolder := os.Getenv("tipizateFolder")
+	serverLogger.Printf("The blog folder location is set to: %s", tipizateFolder)
+
+	utils.Explorer(tipizateFolder, &tipizateRoot, ".md", &tipizate, utils.MdContentParser)
 	serverLogger.Printf("Explorer found %d c code examples", len(tipizate))
 
 	authGroup := app.Group("/", middleware.RouteProtector)

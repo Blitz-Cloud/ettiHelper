@@ -1,12 +1,15 @@
 package utils
 
 import (
+	"log"
+	"os"
 	"sort"
+	"strings"
 	"time"
 
-	"github.com/gomarkdown/markdown"
-	"github.com/gomarkdown/markdown/html"
-	"github.com/gomarkdown/markdown/parser"
+	"github.com/Depado/bfchroma/v2"
+	"github.com/alecthomas/chroma/v2"
+	bf "github.com/russross/blackfriday/v2"
 )
 
 // nu cred ca este necesar sa folosesc generics in acest caz deoarece momentan sortez doar in functie de data asa ca nu ma deranjeaza repetiria
@@ -37,15 +40,11 @@ func SortBlogPostsInDescendingOrderByDate(examples *[]BlogPost) {
 	})
 }
 func Md2Html(md []byte) []byte {
-	// create markdown parser with extensions
-	extensions := parser.CommonExtensions | parser.AutoHeadingIDs | parser.NoEmptyLineBeforeBlock
-	p := parser.NewWithExtensions(extensions)
-	doc := p.Parse(md)
+	data, err := os.ReadFile("./static/catppucinMocha.xml")
+	if err != nil {
+		log.Fatal("Couldn't read the xml file")
+	}
 
-	// create HTML renderer with extensions
-	htmlFlags := html.CommonFlags | html.HrefTargetBlank
-	opts := html.RendererOptions{Flags: htmlFlags}
-	renderer := html.NewRenderer(opts)
-
-	return markdown.Render(doc, renderer)
+	style := chroma.MustNewXMLStyle(strings.NewReader(string(data)))
+	return bf.Run([]byte(md), bf.WithRenderer(bfchroma.NewRenderer(bfchroma.ChromaStyle(style))))
 }

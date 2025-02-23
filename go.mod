@@ -9,10 +9,13 @@ require (
 
 require (
 	github.com/BurntSushi/toml v0.3.1 // indirect
+	github.com/Depado/bfchroma/v2 v2.0.1-0.20250215221414-b677b6651e3e // indirect
 	github.com/adrg/frontmatter v0.2.0 // indirect
+	github.com/alecthomas/chroma/v2 v2.15.0 // indirect
 	github.com/andybalholm/brotli v1.0.5 // indirect
 	github.com/cbroglie/mustache v1.4.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/dlclark/regexp2 v1.11.4 // indirect
 	github.com/gofiber/fiber v1.14.6 // indirect
 	github.com/gofiber/fiber/v2 v2.52.5 // indirect
 	github.com/gofiber/template v1.8.3 // indirect
@@ -26,6 +29,7 @@ require (
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-runewidth v0.0.15 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
+	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.51.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect

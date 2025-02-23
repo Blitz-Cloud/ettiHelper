@@ -8,15 +8,26 @@ import (
 
 	"github.com/Blitz-Cloud/ettiHelper/utils"
 	"github.com/gofiber/fiber/v2"
+	"github.com/joho/godotenv"
 )
 
 func RegisterBlogRoutes(app *fiber.App, serverLogger *log.Logger) {
 	var blogPostRoot utils.FsNode
 	var blogPosts []utils.BlogPost
-	utils.Explorer("./content", &blogPostRoot, ".md", &blogPosts, utils.MdContentParser)
+
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading env file")
+	}
+
+	blogFolder := os.Getenv("blogFolder")
+	serverLogger.Printf("The blog folder location is set to: %s", blogFolder)
+
+	utils.Explorer(blogFolder, &blogPostRoot, ".md", &blogPosts, utils.MdContentParser)
 	serverLogger.Printf("Explorer found %d blog posts", len(blogPosts))
 	utils.SortBlogPostsInDescendingOrderByDate(&blogPosts)
 	serverLogger.Println("Finished sorting blog posts")
+
 	// placeholder for content
 	app.Get("/blog/recommendation-for-english-presentation", func(c *fiber.Ctx) error {
 		data, err := os.ReadFile("./content/englishPresentationRecommendations.md")
