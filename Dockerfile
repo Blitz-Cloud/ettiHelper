@@ -24,7 +24,6 @@ WORKDIR /app
 RUN mkdir ./views
 COPY ./views ./views
 COPY ./static ./static
-COPY ./content ./content
 
 #  should be replaced here as well
 COPY --from=build /go/src/ettiHelper/app .
