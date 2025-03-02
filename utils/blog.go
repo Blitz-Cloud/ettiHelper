@@ -8,10 +8,11 @@ import (
 )
 
 type FrontmatterMetaData struct {
-	Title       string   "yaml:'title'"
-	Date        string   "yaml:date"
-	Description string   "yaml:description"
-	Tags        []string "yaml:tags"
+	Title              string   "yaml:'title'"
+	Date               string   "yaml:'date'"
+	Description        string   "yaml:'description'"
+	Tags               []string "yaml:'tags'"
+	UniYearAndSemester int      "yaml:'uniYearAndSemester'"
 }
 
 func ParseMdString(data string) (FrontmatterMetaData, string) {
