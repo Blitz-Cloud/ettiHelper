@@ -41,12 +41,13 @@ type Tipizat struct {
 }
 
 type BlogPost struct {
-	Title       string
-	Date        string
-	Tags        []string
-	Description string
-	Content     string
-	HtmlContent string
+	Title               string
+	Date                string
+	Tags                []string
+	Description         string
+	Content             string
+	HtmlContent         string
+	UnivYearAndSemester int
 }
 
 type FactoryFunc[T any] func(*File, *[]T)
