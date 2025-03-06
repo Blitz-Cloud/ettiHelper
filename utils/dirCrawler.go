@@ -22,91 +22,20 @@ type FsNode struct {
 	Parent   *FsNode
 }
 
-// type Example struct {
-// 	// Location string
-// 	Name    string
-// 	Date    string
-// 	Content string
-// }
-
-// type Tipizat struct {
-// 	// Location     string
-// 	Name         string
-// 	Date         string
-// 	Tags         []string
-// 	Content      string
-// 	LinkCompiler string
-// }
-
-type BlogPost struct {
-	Title               string
-	Date                string
-	Tags                []string
-	Description         string
-	Content             string
-	HtmlContent         string
-	UnivYearAndSemester int
-}
-
 type FactoryFunc[T any] func(*File, *[]T)
-
-// acesta este un parser de continut si este folosit pentru a extrage datele necesare despre un
-// laborator
-// data este exrasa dupa urmatorul model /data/numeleExercitiu/main.c
-// func LabsContentParser(file *File, contentArray *[]BlogPost) {
-// 	if file.Name == "main.c" {
-// 		// se efectueaza citirea si procesarea datei
-// 		unParsedDate := ((file.Parent).Parent).Name
-// 		date, err := time.Parse("2_Jan_2006", unParsedDate)
-
-// 		if err != nil {
-// 			log.Fatal(err)
-// 		}
-// 		newExample := BlogPost{
-// 			// Location: file.location,
-// 			Title: (file.Parent).Name,
-// 			Date:  fmt.Sprintf("%d-%s-%d", date.Day(), date.Month().String()[:3], date.Year()),
-// 			// Content: strings.Replace(strings.Trim(string(file.content), " "), "\n", "", 1),
-// 			Content: string(file.Content),
-// 		}
-// 		*contentArray = append((*contentArray), newExample)
-// 	}
-// }
-
-// acesta este un parser de continut si este folosit pentru a extrage datele despre tipizatele
-// de pe primul semestru la IETTI PCLP
-// bucla for de mai jos este folosita pentru a nu adauga de mai multe ori acelasi tipizat
-// func ClangCodeExamplesParser(file *File, contentArray *[]BlogPost) {
-// 	if path.Ext(file.Name) == ".c" {
-// 		rootFolder := (file.Parent).Name
-// 		newTipizat := BlogPost{
-// 			// Location:     file.location,
-// 			Title:   file.Name,
-// 			Date:    rootFolder,
-// 			Content: strings.Replace(strings.Trim(string(file.Content), " "), "\n", "", 1),
-// 			// LinkCompiler: fmt.Sprintf("<a href='https://cpp.sh/?source=%s' class='text-ctp-mauve' target='_blank'> Ruleaza codul cu cpp.sh </a>", url.QueryEscape(strings.Replace(strings.Trim(string(file.content), " "), "void main", "int main", 1))),
-// 		}
-// 		ok := 1
-// 		for i := 0; i < len(*contentArray); i++ {
-// 			if (*contentArray)[i].Title == newTipizat.Title {
-// 				ok = 0
-// 			}
-// 		}
-// 		if ok == 1 {
-// 			*contentArray = append((*contentArray), newTipizat)
-// 		}
-// 	}
-// }
 
 func MdContentParser(file *File, contentArray *[]BlogPost) {
 	metaData, content := ParseMdString(file.Content)
 	post := BlogPost{
-		Title:       metaData.Title,
-		Date:        metaData.Date,
-		Description: metaData.Description,
-		Tags:        metaData.Tags,
-		Content:     content,
-		HtmlContent: string(Md2Html([]byte(content))),
+		FrontmatterMetaData{
+			metaData.Title,
+			metaData.Date,
+			metaData.Description,
+			metaData.Tags,
+			metaData.UniYearAndSemester,
+		},
+		file.Location,
+		content,
 	}
 	*contentArray = append((*contentArray), post)
 }

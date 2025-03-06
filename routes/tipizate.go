@@ -72,6 +72,7 @@ func RegisterTipizateRoutes(app *fiber.App, serverLogger *log.Logger) {
 				break
 			}
 		}
+		example.Content = string(utils.Md2Html([]byte(example.Content)))
 
 		return c.Render("lab", fiber.Map{
 			"post":         example,

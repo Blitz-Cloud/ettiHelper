@@ -33,9 +33,10 @@ func RegisterLabsRoutes(app *fiber.App, serverLogger *log.Logger) {
 
 	authGroup := app.Group("/", middleware.RouteProtector)
 
-	authGroup.Get("/allLabs", func(c *fiber.Ctx) error {
-		return c.Render("Posts", fiber.Map{"posts": examples})
-	})
+	// authGroup.Get("/allLabs", func(c *fiber.Ctx) error {
+	// 	return c.Render("Posts", fiber.Map{"posts": examples})
+	// })
+
 	authGroup.Get("/labs", func(c *fiber.Ctx) error {
 		days := make([]string, len(examples))
 		for _, file := range examples {
@@ -79,6 +80,7 @@ func RegisterLabsRoutes(app *fiber.App, serverLogger *log.Logger) {
 				break
 			}
 		}
+		example.Content = string(utils.Md2Html([]byte(example.Content)))
 		return c.Render("lab", fiber.Map{
 			"post":         example,
 			"linkTo":       "lab",

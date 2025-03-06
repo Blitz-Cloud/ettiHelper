@@ -54,7 +54,8 @@ func RegisterBlogRoutes(app *fiber.App, serverLogger *log.Logger) {
 				post = blogPosts[i]
 			}
 		}
-		return c.Render("blogPost", fiber.Map{"content": post.HtmlContent})
+		return c.Render("blogPost", fiber.Map{"content": string(utils.Md2Html([]byte(post.Content)))})
+
 	})
 
 }
