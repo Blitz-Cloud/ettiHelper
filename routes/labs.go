@@ -15,8 +15,8 @@ func RegisterLabsRoutes(app *fiber.App, serverLogger *log.Logger) {
 
 	// initializarea asa zisei baze de date
 	// sper sa pot face transferul spre o baza de date adevarata
-	var exampleRoot utils.FsNode
-	var examples []utils.BlogPost
+	var labsRoot utils.FsNode
+	var labs []utils.BlogPost
 
 	err := godotenv.Load()
 	if err != nil {
@@ -26,20 +26,20 @@ func RegisterLabsRoutes(app *fiber.App, serverLogger *log.Logger) {
 	labsFolder := os.Getenv("labsFolder")
 	serverLogger.Printf("The labs folder location is set to: %s", labsFolder)
 
-	utils.Explorer(labsFolder, &exampleRoot, ".md", &examples, utils.MdContentParser)
-	serverLogger.Printf("Explorer a gasit %d coduri scrise la laboratoare", len(examples))
-	utils.SortBlogPostsInDescendingOrderByDate(&examples)
+	utils.Explorer(labsFolder, &labsRoot, ".md", &labs, utils.MdContentParser)
+	serverLogger.Printf("Explorer a gasit %d coduri scrise la laboratoare", len(labs))
+	utils.SortBlogPostsInDescendingOrderByDate(&labs)
 	serverLogger.Println("Finished sorting labs posts")
 
 	authGroup := app.Group("/", middleware.RouteProtector)
 
 	// authGroup.Get("/allLabs", func(c *fiber.Ctx) error {
-	// 	return c.Render("Posts", fiber.Map{"posts": examples})
+	// 	return c.Render("Posts", fiber.Map{"posts": labs})
 	// })
 
-	authGroup.Get("/labs", func(c *fiber.Ctx) error {
-		days := make([]string, len(examples))
-		for _, file := range examples {
+	authGroup.Get("/labs/:uniYearAndSemester", func(c *fiber.Ctx) error {
+		days := make([]string, len(labs))
+		for _, file := range labs {
 			ok := 1
 			for i := 0; i < len(days); i++ {
 				if days[i] == file.Date {
@@ -51,55 +51,55 @@ func RegisterLabsRoutes(app *fiber.App, serverLogger *log.Logger) {
 			}
 		}
 
-		return c.Render("Posts", fiber.Map{"posts": examples,
+		return c.Render("Posts", fiber.Map{"posts": labs,
 			"Title": "Posts", "linkTo": "lab"})
 	})
 
 	authGroup.Get("/lab/:date/:name", func(c *fiber.Ctx) error {
 		date := c.Params("date")
 		name := c.Params("name")
-		example := new(utils.BlogPost)
+		lab := new(utils.BlogPost)
 		previousPost := ""
 		nextPost := ""
-		for i := 0; i < len(examples); i++ {
-			if examples[i].Title == name && examples[i].Date == date {
+		for i := 0; i < len(labs); i++ {
+			if labs[i].Title == name && labs[i].Date == date {
 
-				example = &examples[i]
+				lab = &labs[i]
 				if i == 0 {
 
-					nextPost = fmt.Sprintf("%s/%s", examples[i].Date, examples[i].Title)
+					nextPost = fmt.Sprintf("%s/%s", labs[i].Date, labs[i].Title)
 				} else {
-					nextPost = fmt.Sprintf("%s/%s", examples[i-1].Date, examples[i-1].Title)
+					nextPost = fmt.Sprintf("%s/%s", labs[i-1].Date, labs[i-1].Title)
 				}
-				if i == len(examples)-1 {
+				if i == len(labs)-1 {
 
-					previousPost = fmt.Sprintf("%s/%s", examples[i].Date, examples[i].Title)
+					previousPost = fmt.Sprintf("%s/%s", labs[i].Date, labs[i].Title)
 				} else {
-					previousPost = fmt.Sprintf("%s/%s", examples[i+1].Date, examples[i+1].Title)
+					previousPost = fmt.Sprintf("%s/%s", labs[i+1].Date, labs[i+1].Title)
 				}
 				break
 			}
 		}
-		example.Content = string(utils.Md2Html([]byte(example.Content)))
+		lab.Content = string(utils.Md2Html([]byte(lab.Content)))
 		return c.Render("lab", fiber.Map{
-			"post":         example,
+			"post":         lab,
 			"linkTo":       "lab",
 			"previousPost": previousPost,
 			"nextPost":     nextPost,
 		})
 	})
-	authGroup.Get("/api/post/:date/:name", func(c *fiber.Ctx) error {
-		date := c.Params("date")
-		name := c.Params("name")
-		example := new(utils.BlogPost)
-		for i := 0; i < len(examples); i++ {
-			if examples[i].Title == name && examples[i].Date == date {
+	// authGroup.Get("/api/post/:date/:name", func(c *fiber.Ctx) error {
+	// 	date := c.Params("date")
+	// 	name := c.Params("name")
+	// 	lab := new(utils.BlogPost)
+	// 	for i := 0; i < len(labs); i++ {
+	// 		if labs[i].Title == name && labs[i].Date == date {
 
-				example = &examples[i]
-				break
-			}
-		}
-		return c.SendString(example.Content)
-	})
+	// 			lab = &labs[i]
+	// 			break
+	// 		}
+	// 	}
+	// 	return c.SendString(lab.Content)
+	// })
 
 }
