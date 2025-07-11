@@ -42,14 +42,14 @@ func main() {
 		ViewsLayout: "layout/main",
 	})
 	app.Static("/static", "./static")
-	// app.Static("/assets", "./build/client/assets")
+	app.Static("/assets", "./build/client/assets")
 
 	// logging
 	app.Use(logger.New())
 
 	app.Use(cors.New(cors.Config{
 		// trebuie sa adaug prod si development aici
-		AllowOrigins:     "http://localhost:5173,http://localhost:3000",
+		AllowOrigins:     "http://localhost:5173,http://localhost:3000,https://ettiui.netlify.app",
 		AllowCredentials: true,
 	}))
 
@@ -58,8 +58,8 @@ func main() {
 	})
 
 	routes.RegisterApiRouter(app, serverLogger)
-	// app.Get("*", func(c *fiber.Ctx) error {
-	// 	return c.SendFile("./build/client/index.html")
-	// })
+	app.Get("*", func(c *fiber.Ctx) error {
+		return c.SendFile("./build/client/index.html")
+	})
 	app.Listen(":3000")
 }
