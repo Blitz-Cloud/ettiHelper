@@ -6,8 +6,10 @@ import (
 
 	"github.com/Blitz-Cloud/ettiHelper/routes"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/template/mustache/v2"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/joho/godotenv"
 )
 
@@ -15,6 +17,13 @@ type Post struct {
 	title   string
 	data    string
 	content string
+}
+
+// Claims struct to represent the JWT claims
+type Claims struct {
+	Aud string `json:"aud"`
+	Iss string `json:"iss"`
+	jwt.RegisteredClaims
 }
 
 func main() {
@@ -33,30 +42,24 @@ func main() {
 		ViewsLayout: "layout/main",
 	})
 	app.Static("/static", "./static")
+	// app.Static("/assets", "./build/client/assets")
 
 	// logging
 	app.Use(logger.New())
 
-	// routes
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.Redirect("/login")
-	})
+	app.Use(cors.New(cors.Config{
+		// trebuie sa adaug prod si development aici
+		AllowOrigins:     "http://localhost:5173,http://localhost:3000",
+		AllowCredentials: true,
+	}))
 
 	app.Get("/login", func(c *fiber.Ctx) error {
-		date := c.Cookies("testC")
-		if date != "" {
-			return c.Redirect("/labs")
-		}
-		return c.Render("login", fiber.Map{})
+		return c.SendString("LoginPage")
 	})
 
-	// microsoft flow
-	routes.RegisterMicrosoftOAuth(app)
-
-	// register
-	routes.RegisterLabsRoutes(app, serverLogger)
-	routes.RegisterTipizateRoutes(app, serverLogger)
-	routes.RegisterBlogRoutes(app, serverLogger)
-
+	routes.RegisterApiRouter(app, serverLogger)
+	// app.Get("*", func(c *fiber.Ctx) error {
+	// 	return c.SendFile("./build/client/index.html")
+	// })
 	app.Listen(":3000")
 }

@@ -8,8 +8,17 @@ require (
 )
 
 require (
+	github.com/MicahParks/jwkset v0.9.6 // indirect
+	github.com/golang-jwt/jwt/v4 v4.4.2 // indirect
+	github.com/golang-jwt/jwt/v5 v5.2.2 // indirect
+	golang.org/x/time v0.9.0 // indirect
+)
+
+require (
 	github.com/BurntSushi/toml v0.3.1 // indirect
 	github.com/Depado/bfchroma/v2 v2.0.1-0.20250215221414-b677b6651e3e // indirect
+	github.com/MicahParks/keyfunc v1.9.0
+	github.com/MicahParks/keyfunc/v3 v3.4.0
 	github.com/adrg/frontmatter v0.2.0 // indirect
 	github.com/alecthomas/chroma/v2 v2.15.0 // indirect
 	github.com/andybalholm/brotli v1.0.5 // indirect
@@ -21,6 +30,7 @@ require (
 	github.com/gofiber/template v1.8.3 // indirect
 	github.com/gofiber/template/mustache/v2 v2.0.12 // indirect
 	github.com/gofiber/utils v1.1.0 // indirect
+	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/uuid v1.5.0 // indirect
 	github.com/gorilla/schema v1.1.0 // indirect
 	github.com/joho/godotenv v1.5.1 // indirect

@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/Blitz-Cloud/ettiHelper/utils"
+	"github.com/davecgh/go-spew/spew"
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
 )
@@ -27,6 +28,7 @@ func RegisterBlogRoutes(app *fiber.App, serverLogger *log.Logger) {
 	serverLogger.Printf("Explorer found %d blog posts", len(blogPosts))
 	utils.SortBlogPostsInDescendingOrderByDate(&blogPosts)
 	serverLogger.Println("Finished sorting blog posts")
+	spew.Dump(blogPosts)
 
 	// placeholder for content
 	app.Get("/blog/recommendation-for-english-presentation", func(c *fiber.Ctx) error {
@@ -54,7 +56,7 @@ func RegisterBlogRoutes(app *fiber.App, serverLogger *log.Logger) {
 				post = blogPosts[i]
 			}
 		}
-		return c.Render("blogPost", fiber.Map{"content": post.HtmlContent})
+		return c.Render("blogPost", fiber.Map{"content": post.HtmlContent, "title": post.Title, "description": post.Description})
 	})
 
 }

@@ -5,7 +5,6 @@ import (
 	"log"
 	"os"
 
-	"github.com/Blitz-Cloud/ettiHelper/middleware"
 	"github.com/Blitz-Cloud/ettiHelper/utils"
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
@@ -31,11 +30,12 @@ func RegisterLabsRoutes(app *fiber.App, serverLogger *log.Logger) {
 	utils.SortBlogPostsInDescendingOrderByDate(&examples)
 	serverLogger.Println("Finished sorting labs posts")
 
-	authGroup := app.Group("/", middleware.RouteProtector)
+	authGroup := app.Group("/")
 
 	authGroup.Get("/allLabs", func(c *fiber.Ctx) error {
 		return c.Render("Posts", fiber.Map{"posts": examples})
 	})
+
 	authGroup.Get("/labs", func(c *fiber.Ctx) error {
 		days := make([]string, len(examples))
 		for _, file := range examples {
@@ -86,7 +86,20 @@ func RegisterLabsRoutes(app *fiber.App, serverLogger *log.Logger) {
 			"nextPost":     nextPost,
 		})
 	})
-	authGroup.Get("/api/post/:date/:name", func(c *fiber.Ctx) error {
+	// authGroup.Get("/api/lab/:date/:name", func(c *fiber.Ctx) error {
+	// 	date := c.Params("date")
+	// 	name := c.Params("name")
+	// 	example := new(utils.BlogPost)
+	// 	for i := 0; i < len(examples); i++ {
+	// 		if examples[i].Title == name && examples[i].Date == date {
+
+	// 			example = &examples[i]
+	// 			break
+	// 		}
+	// 	}
+	// 	return c.SendString(example.Content)
+	// })
+	authGroup.Get("/api/lab/:date/:name", func(c *fiber.Ctx) error {
 		date := c.Params("date")
 		name := c.Params("name")
 		example := new(utils.BlogPost)
@@ -97,7 +110,6 @@ func RegisterLabsRoutes(app *fiber.App, serverLogger *log.Logger) {
 				break
 			}
 		}
-		return c.SendString(example.Content)
+		return c.JSON(example)
 	})
-
 }

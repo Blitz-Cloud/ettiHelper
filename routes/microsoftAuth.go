@@ -7,6 +7,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
 	"golang.org/x/oauth2"
@@ -45,6 +46,7 @@ func RegisterMicrosoftOAuth(app *fiber.App) {
 		state := c.Query("state")
 
 		// Verify the state matches
+		spew.Dump(state)
 		if state != "state" {
 			return c.Status(http.StatusBadRequest).SendString("Invalid state parameter")
 		}
