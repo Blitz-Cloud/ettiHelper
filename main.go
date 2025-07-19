@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 
+	// "github.com/Blitz-Cloud/ettiHelper/routes"
 	"github.com/Blitz-Cloud/ettiHelper/routes"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -11,6 +12,8 @@ import (
 	"github.com/gofiber/template/mustache/v2"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/joho/godotenv"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 )
 
 type Post struct {
@@ -25,6 +28,10 @@ type Claims struct {
 	Iss string `json:"iss"`
 	jwt.RegisteredClaims
 }
+
+type DBConType struct{}
+
+var DBCon DBConType
 
 func main() {
 
@@ -43,6 +50,16 @@ func main() {
 	})
 	app.Static("/static", "./static")
 	app.Static("/assets", "./build/client/assets")
+
+	db, err := gorm.Open(sqlite.Open("ettiContent.db"), &gorm.Config{})
+	if err != nil {
+		serverLogger.Fatal("Connection to db cant be established")
+	}
+
+	app.Use(func(c *fiber.Ctx) error {
+		c.Locals("test", db)
+		return c.Next()
+	})
 
 	// logging
 	app.Use(logger.New())
