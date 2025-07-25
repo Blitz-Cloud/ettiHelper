@@ -6,9 +6,9 @@ services:
     ports:
       - 3000:3000
     volumes:
-      - "/home/opc/ettihContent/labs:/ettihData/labs:rw"
-      - "/home/opc/ettihContent/tipizate:/ettihData/tipizate:rw"
-      - "/home/opc/ettihContent/blog:/ettihData/blog:rw"
+      # - "/home/opc/ettihContent/labs:/ettihData/labs:rw"
+      # - "/home/opc/ettihContent/tipizate:/ettihData/tipizate:rw"
+      # - "/home/opc/ettihContent/blog:/ettihData/blog:rw"
       - "./.env:/app/.env"
     labels:
       - "traefik.enable=true"

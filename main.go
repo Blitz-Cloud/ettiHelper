@@ -51,9 +51,10 @@ func main() {
 	app.Static("/static", "./static")
 	app.Static("/assets", "./build/client/assets")
 
-	db, err := gorm.Open(sqlite.Open("ettiContent.db"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("./ettiContent.db"), &gorm.Config{})
 	if err != nil {
-		serverLogger.Fatal("Connection to db cant be established")
+		// serverLogger.Println(err)
+		serverLogger.Fatal(err)
 	}
 
 	app.Use(func(c *fiber.Ctx) error {
