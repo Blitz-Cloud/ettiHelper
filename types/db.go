@@ -8,11 +8,13 @@ import (
 
 type Lab struct {
 	gorm.Model
+	// frontmatter
 	Title              string
 	Description        string
 	Date               *time.Time
 	Tags               string
 	UniYearAndSemester uint
-	Content            string
+	// fisierul de md
+	Content string
 }
 type Blog Lab
