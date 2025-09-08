@@ -4,11 +4,13 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 	"strings"
 
 	"github.com/MicahParks/keyfunc/v3"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/joho/godotenv"
 )
 
 func IsValidMSJWT(token string) bool {
@@ -36,6 +38,18 @@ func RouteProtector(c *fiber.Ctx) error {
 		return c.Next()
 	}
 	return c.Redirect("/login")
+}
+
+func AdminRouteProtector(c *fiber.Ctx) error {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading env file")
+	}
+	if c.Get("Authorization") == "" || c.Get("Authorization") != fmt.Sprintf("Bearer %s", os.Getenv("adminToken")) {
+		return c.SendStatus(fiber.StatusUnauthorized)
+	}
+
+	return c.Next()
 }
 
 func ValidateJwtMiddleware(c *fiber.Ctx) error {
