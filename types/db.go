@@ -13,6 +13,7 @@ type Lab struct {
 	Description        string
 	Date               *time.Time
 	Tags               string
+	Subject            string
 	UniYearAndSemester uint
 	// fisierul de md
 	Content string
