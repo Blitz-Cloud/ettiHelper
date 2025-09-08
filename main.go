@@ -6,6 +6,7 @@ import (
 
 	// "github.com/Blitz-Cloud/ettiHelper/routes"
 	"github.com/Blitz-Cloud/ettiHelper/routes"
+	"github.com/Blitz-Cloud/ettiHelper/types"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -52,13 +53,14 @@ func main() {
 	app.Static("/assets", "./build/client/assets")
 
 	db, err := gorm.Open(sqlite.Open("./ettiContent.db"), &gorm.Config{})
+	db.AutoMigrate(&types.Lab{}, &types.Blog{})
 	if err != nil {
 		// serverLogger.Println(err)
 		serverLogger.Fatal(err)
 	}
 
 	app.Use(func(c *fiber.Ctx) error {
-		c.Locals("test", db)
+		c.Locals("db", db)
 		return c.Next()
 	})
 
@@ -76,8 +78,9 @@ func main() {
 	})
 
 	routes.RegisterApiRouter(app, serverLogger)
-	app.Get("*", func(c *fiber.Ctx) error {
-		return c.SendFile("./build/client/index.html")
-	})
+	routes.RegisterAdminRoutes(app, serverLogger)
+	// app.Get("*", func(c *fiber.Ctx) error {
+	// 	return c.SendFile("./build/client/index.html")
+	// })
 	app.Listen(":3000")
 }
