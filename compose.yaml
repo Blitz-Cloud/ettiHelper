@@ -16,9 +16,9 @@ services:
       #Define midleware
       - "traefik.http.routers.ettih.middlewares=my-traefikBouncer@file,my-cloudflarewarp@file"
     networks:
-      - proxy
+      - web
     restart: always
 
 networks:
-  proxy:
+  web:
     external: true
