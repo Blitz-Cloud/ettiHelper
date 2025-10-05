@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"os"
+	"time"
 
 	// "github.com/Blitz-Cloud/ettiHelper/routes"
 	"github.com/Blitz-Cloud/ettiHelper/routes"
@@ -82,5 +83,8 @@ func main() {
 	app.Get("*", func(c *fiber.Ctx) error {
 		return c.SendFile("./build/client/index.html")
 	})
+
+	currentTime := time.Now().UTC().Local().Format(time.RFC3339)
+	os.WriteFile("./sync.txt", []byte(currentTime), 0777)
 	app.Listen(":3000")
 }
