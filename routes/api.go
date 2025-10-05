@@ -21,13 +21,16 @@ func RegisterApiRouter(app *fiber.App, serverLogger *log.Logger) {
 		log.Fatal("Error loading env file")
 	}
 
-	app.Post("/api/admin/last-sync", func(c *fiber.Ctx) error {
+	// apiGroup := app.Group("/api", middleware.ValidateJwtMiddleware)
+	apiGroup := app.Group("/api")
+
+	apiGroup.Post("/admin/last-sync", func(c *fiber.Ctx) error {
 		currentTime := time.Now().UTC().Local().Format(time.RFC3339)
 		os.WriteFile("./sync.txt", []byte(currentTime), 0777)
 		return c.SendStatus(fiber.StatusOK)
 	})
 
-	app.Get("/last-sync", func(c *fiber.Ctx) error {
+	apiGroup.Get("/admin/last-sync", func(c *fiber.Ctx) error {
 		wd, err := os.Getwd()
 		if err != nil {
 			serverLogger.Println(err)
@@ -47,9 +50,6 @@ func RegisterApiRouter(app *fiber.App, serverLogger *log.Logger) {
 
 		return c.SendString(string(content))
 	})
-	// apiGroup := app.Group("/api", middleware.ValidateJwtMiddleware)
-	apiGroup := app.Group("/api")
-
 	apiGroup.Get("/test", func(c *fiber.Ctx) error {
 		return c.SendString("Auth is working")
 	})
