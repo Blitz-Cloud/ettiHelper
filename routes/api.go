@@ -6,7 +6,6 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/Blitz-Cloud/ettiHelper/middleware"
 	"github.com/Blitz-Cloud/ettiHelper/types"
 	"github.com/davecgh/go-spew/spew"
 	"github.com/gofiber/fiber/v2"
@@ -48,8 +47,8 @@ func RegisterApiRouter(app *fiber.App, serverLogger *log.Logger) {
 
 		return c.SendString(string(content))
 	})
-	apiGroup := app.Group("/api", middleware.ValidateJwtMiddleware)
-	// apiGroup := app.Group("/api")
+	// apiGroup := app.Group("/api", middleware.ValidateJwtMiddleware)
+	apiGroup := app.Group("/api")
 
 	apiGroup.Get("/test", func(c *fiber.Ctx) error {
 		return c.SendString("Auth is working")
