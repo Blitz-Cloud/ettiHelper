@@ -3,6 +3,7 @@ package routes
 import (
 	"log"
 
+	"github.com/Blitz-Cloud/ettiHelper/middleware"
 	"github.com/Blitz-Cloud/ettiHelper/types"
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
@@ -17,8 +18,8 @@ func RegisterApiRouter(app *fiber.App, serverLogger *log.Logger) {
 		log.Fatal("Error loading env file")
 	}
 
-	// apiGroup := app.Group("/api", middleware.ValidateJwtMiddleware)
-	apiGroup := app.Group("/api")
+	apiGroup := app.Group("/api", middleware.ValidateJwtMiddleware)
+	// apiGroup := app.Group("/api")
 
 	apiGroup.Get("/test", func(c *fiber.Ctx) error {
 		return c.SendString("Auth is working")
