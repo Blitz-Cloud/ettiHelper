@@ -2,9 +2,13 @@ package routes
 
 import (
 	"log"
+	"os"
+	"path/filepath"
+	"time"
 
 	"github.com/Blitz-Cloud/ettiHelper/middleware"
 	"github.com/Blitz-Cloud/ettiHelper/types"
+	"github.com/davecgh/go-spew/spew"
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
 	"gorm.io/gorm"
@@ -18,6 +22,32 @@ func RegisterApiRouter(app *fiber.App, serverLogger *log.Logger) {
 		log.Fatal("Error loading env file")
 	}
 
+	app.Post("/api/admin/last-sync", func(c *fiber.Ctx) error {
+		currentTime := time.Now().UTC().Local().Format(time.RFC3339)
+		os.WriteFile("./sync.txt", []byte(currentTime), 0777)
+		return c.SendStatus(fiber.StatusOK)
+	})
+
+	app.Get("/last-sync", func(c *fiber.Ctx) error {
+		wd, err := os.Getwd()
+		if err != nil {
+			serverLogger.Println(err)
+			return c.SendStatus(fiber.StatusInternalServerError)
+		}
+		content, err := os.ReadFile(
+			filepath.Join(
+
+				wd,
+				"./sync.txt"))
+
+		if err != nil {
+			serverLogger.Println(err)
+			return c.SendStatus(fiber.StatusInternalServerError)
+		}
+		spew.Dump(content)
+
+		return c.SendString(string(content))
+	})
 	apiGroup := app.Group("/api", middleware.ValidateJwtMiddleware)
 	// apiGroup := app.Group("/api")
 

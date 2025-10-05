@@ -79,7 +79,7 @@ func main() {
 	})
 
 	routes.RegisterApiRouter(app, serverLogger)
-	routes.RegisterAdminRoutes(app, serverLogger)
+	// routes.RegisterAdminRoutes(app, serverLogger)
 	app.Get("*", func(c *fiber.Ctx) error {
 		return c.SendFile("./build/client/index.html")
 	})
