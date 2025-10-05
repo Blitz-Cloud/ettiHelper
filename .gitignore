@@ -4,4 +4,3 @@ ettiHelper
 test
 .env
 *.db
-sync.txt
