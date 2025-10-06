@@ -54,6 +54,9 @@ func main() {
 	app.Static("/assets", "./build/client/assets")
 
 	db, err := gorm.Open(sqlite.Open("./ettiContent.db"), &gorm.Config{})
+	if err != nil {
+		log.Fatal(err)
+	}
 	db.AutoMigrate(&types.Lab{}, &types.Blog{})
 	if err != nil {
 		// serverLogger.Println(err)
