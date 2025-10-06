@@ -42,7 +42,7 @@ WORKDIR /app
 RUN mkdir ./views
 COPY ./views ./views
 COPY ./static ./static
-COPY ./ettiContent.db ./ettiContent.db
+# COPY ./ettiContent.db ./ettiContent.db
 COPY ./sync.txt ./sync.txt
 COPY --from=react-ui-build /app/build ./build
 

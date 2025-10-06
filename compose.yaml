@@ -7,6 +7,7 @@ services:
       - 3000:3000
     volumes:
       - "./.env:/app/.env"
+      - "./ettiContent.db:/app/ettiContent.db"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.ettih.rule=Host(`ettih.blitzcloud.me`)"
