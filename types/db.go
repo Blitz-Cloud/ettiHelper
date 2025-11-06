@@ -17,5 +17,6 @@ type Lab struct {
 	UniYearAndSemester uint
 	// fisierul de md
 	Content string
+	CodeExample string
 }
 type Blog Lab

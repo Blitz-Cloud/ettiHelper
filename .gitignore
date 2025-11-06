@@ -4,3 +4,5 @@ ettiHelper
 test
 .env
 *.db
+/build/*
+ui

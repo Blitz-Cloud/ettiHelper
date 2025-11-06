@@ -66,6 +66,7 @@ func RegisterApiRouter(app *fiber.App, serverLogger *log.Logger) {
 			case "labs":
 				var labs []types.Lab
 				db.Find(&labs)
+				spew.Dump(labs[0])
 				return c.JSON(labs)
 			}
 		} else {
