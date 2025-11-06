@@ -15,7 +15,7 @@ services:
       - "traefik.http.routers.ettih.tls=true"
       - "traefik.http.services.ettih.loadbalancer.server.port=3000"
       #Define midleware
-      - "traefik.http.routers.ettih.middlewares=my-traefikBouncer@file,my-cloudflarewarp@file"
+      #- "traefik.http.routers.ettih.middlewares=my-traefikBouncer@file,my-cloudflarewarp@file"
     networks:
       - web
     restart: always
