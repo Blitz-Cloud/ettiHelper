@@ -53,7 +53,7 @@ func main() {
 	app.Static("/static", "./static")
 	app.Static("/assets", "./build/client/assets")
 
-	db, err := gorm.Open(sqlite.Open("./dev.db"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("./ettiContent.db"), &gorm.Config{})
 	if err != nil {
 		log.Fatal(err)
 	}
