@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -57,32 +58,24 @@ func InitLogger(logger *log.Logger, level logLevel, flags int, filePath string) 
 	return &l
 }
 
-func (l *Logger) Debug(args ...interface{}) {
+func (l *Logger) Debug(format string, args ...interface{}) {
 	if l.level <= DEBUG {
-		args = append(make([]interface{}, 1, len(args)+1), args)
-		args[0] = "LOG "
-		l.l.Println(args...)
+		l.l.Fatal("LOG: ", fmt.Sprintf(format, args...))
 	}
 }
 
-func (l *Logger) Error(args ...interface{}) {
+func (l *Logger) Error(format string, args ...interface{}) {
 	if l.level <= ERROR {
-		args = append(make([]interface{}, 1, len(args)+1), args)
-		args[0] = "ERROR "
-		l.l.Println(args...)
+		l.l.Println("ERROR: ", fmt.Sprintf(format, args...))
 	}
 }
 
-func (l *Logger) Info(args ...interface{}) {
+func (l *Logger) Info(format string, args ...interface{}) {
 	if l.level <= INFO {
-		args = append(make([]interface{}, 1, len(args)+1), args)
-		args[0] = "INFO "
-		l.l.Println(args...)
+		l.l.Println("INFO: ", fmt.Sprintf(format, args...))
 	}
 }
 
-func (l *Logger) Fatal(args ...interface{}) {
-	args = append(make([]interface{}, 1, len(args)+1), args)
-	args[0] = "FATAL "
-	l.l.Fatal(args...)
+func (l *Logger) Fatal(format string, args ...interface{}) {
+	l.l.Fatal("FATAL: ", fmt.Sprintf(format, args...))
 }
