@@ -80,3 +80,7 @@ func (l *Logger) Info(format string, args ...interface{}) {
 func (l *Logger) Fatal(format string, args ...interface{}) {
 	l.l.Fatal("FATAL: ", fmt.Sprintf(format, args...))
 }
+
+func (l *Logger) Dump(args ...interface{}) {
+	l.l.Println("DEBUG-DUMP: \n", spew.Sdump(args...))
+}
