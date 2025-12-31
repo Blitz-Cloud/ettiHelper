@@ -8,13 +8,13 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"time"
 
 	"github.com/adrg/frontmatter"
 	"github.com/gofiber/fiber/v2/log"
 )
 
 type FrontmatterMetaData struct {
+	ID                 string   `yaml:"id"`
 	Title              string   `yaml:"title" json:"title"`
 	Date               string   `yaml:"date" json:"date"`
 	Description        string   `yaml:"description" json:"description"`
@@ -23,7 +23,7 @@ type FrontmatterMetaData struct {
 }
 
 type Post struct {
-	ID string
+	// ID string
 	// frontmatter
 	FrontmatterMetaData
 	Category string
@@ -56,8 +56,8 @@ func ParseMdString(data string) (Post, error) {
 type Properties struct {
 	Protected    bool   `json:"protected"`
 	RestrictedTo string `json:"restricted-to"`
-	LastUpdated  string `json:"last-updated"`
-	Visible      bool   `json:"visible"`
+	// LastUpdated  string `json:"last-updated"`
+	Visible bool `json:"visible"`
 }
 
 func readPostFile(path string) (Post, error) {
@@ -137,13 +137,7 @@ func getPosts(categories []Category, paths ...string) []Post {
 					Log.Error(err.Error())
 					return []Post{}
 				}
-				fullPostStats, err := os.Stat(filepath.Join(dirPath, post.Name()))
-				if err != nil {
-					Log.Error(err.Error())
-					return []Post{}
-				}
 				fullPost.Category = category.Name
-				fullPost.Properties.LastUpdated = fullPostStats.ModTime().Format(time.RFC3339)
 				Posts = append(Posts, fullPost)
 			}
 		}
