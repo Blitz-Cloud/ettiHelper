@@ -51,16 +51,17 @@ func InitLogger(logger *log.Logger, level logLevel, flags int, filePath string) 
 	l := Logger{}
 	l.SetLogger(logger)
 	l.SetLogLevel(level)
-	l.SetFlags(flags)
 	if len(filePath) != 0 {
 		l.SetOutputFile(filePath)
 	}
+	l.l.Println()
+	l.SetFlags(flags)
 	return &l
 }
 
 func (l *Logger) Debug(format string, args ...interface{}) {
 	if l.level <= DEBUG {
-		l.l.Fatal("LOG: ", fmt.Sprintf(format, args...))
+		l.l.Println("DEBUG: ", fmt.Sprintf(format, args...))
 	}
 }
 
