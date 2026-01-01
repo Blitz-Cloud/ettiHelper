@@ -70,10 +70,10 @@ type Post struct {
 	PublishedDate      *time.Time
 	UniYearAndSemester int
 	Content            string `gorm:"type:text"`
-
-	Protected    bool
-	RestrictedTo string
-	Visible      bool
+	Hash               string `gorm:"uniqueIndex;not null"`
+	Protected          bool
+	RestrictedTo       string
+	Visible            bool
 
 	// Relationships
 	Category Category

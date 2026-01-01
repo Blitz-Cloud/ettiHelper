@@ -54,10 +54,10 @@ func SeedFromInMemory(sqlDB *gorm.DB, memDB DB) error {
 			Log.Debug("Id to look up : %s", post.ID)
 			err := tx.Where("id = ? ", post.ID).First(&postDB).Error
 
-			if err == nil {
-
+			if err == nil && postDB.Hash != post.Hash {
 				postDB.UUIDBase.ID = post.ID
 				postDB.CategoryID = categoryName2IdMap[post.Category]
+				postDB.Hash = post.Hash
 				postDB.Title = post.Title
 				postDB.Description = post.Description
 				postDB.UniYearAndSemester = post.UniYearAndSemester
@@ -75,6 +75,7 @@ func SeedFromInMemory(sqlDB *gorm.DB, memDB DB) error {
 					t = time.Now().UTC().Local()
 				}
 				newPost := types.Post{}
+				postDB.Hash = post.Hash
 				newPost.UUIDBase.ID = post.ID
 				newPost.CategoryID = categoryName2IdMap[post.Category]
 				newPost.Title = post.Title

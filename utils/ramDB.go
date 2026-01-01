@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"crypto/sha256"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -28,6 +29,7 @@ type Post struct {
 	FrontmatterMetaData
 	Category string
 	Content  string `json:"content"`
+	Hash     string
 	Properties
 }
 
@@ -65,7 +67,15 @@ func readPostFile(path string) (Post, error) {
 	if err != nil {
 		return Post{}, err
 	}
-	return ParseMdString(string(fileContent))
+	hash := sha256.Sum256(fileContent)
+	post, err := ParseMdString(string(fileContent))
+	if err != nil {
+		return Post{}, err
+	}
+	post.Hash = fmt.Sprintf("%x", hash)
+	Log.Info("Hash here: %s", post.Hash)
+	Log.Dump(post)
+	return post, nil
 }
 
 func readProprieties(path string) (Properties, error) {
