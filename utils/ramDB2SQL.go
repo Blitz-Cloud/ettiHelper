@@ -26,7 +26,6 @@ func SeedFromInMemory(sqlDB *gorm.DB, memDB DB) error {
 		}
 
 		for _, category := range memDB.Categories {
-			Log.Dump(category)
 			metaData := strings.Split(category.Name, "-")
 			if len(metaData) != 2 {
 				continue
@@ -51,7 +50,6 @@ func SeedFromInMemory(sqlDB *gorm.DB, memDB DB) error {
 			if len(metaData) != 2 {
 				continue
 			}
-			Log.Debug("Id to look up : %s", post.ID)
 			err := tx.Where("id = ? ", post.ID).First(&postDB).Error
 
 			if err == nil && postDB.Hash != post.Hash {
@@ -69,13 +67,14 @@ func SeedFromInMemory(sqlDB *gorm.DB, memDB DB) error {
 				}
 
 			} else if errors.Is(err, gorm.ErrRecordNotFound) {
-
+				// Log.Debug("Before creating \nRAMDB:")
+				// Log.Dump(post)
 				t, err := time.Parse(time.RFC3339, post.Date)
 				if err != nil {
 					t = time.Now().UTC().Local()
 				}
 				newPost := types.Post{}
-				postDB.Hash = post.Hash
+				newPost.Hash = post.Hash
 				newPost.UUIDBase.ID = post.ID
 				newPost.CategoryID = categoryName2IdMap[post.Category]
 				newPost.Title = post.Title
@@ -85,6 +84,8 @@ func SeedFromInMemory(sqlDB *gorm.DB, memDB DB) error {
 				newPost.Content = post.Content
 				newPost.Protected = post.Properties.Protected
 				newPost.Visible = post.Properties.Visible
+
+				Log.Dump(newPost)
 				if err := tx.Create(&newPost).Error; err != nil {
 					Log.Error(err.Error())
 				}
