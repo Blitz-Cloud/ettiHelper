@@ -73,8 +73,6 @@ func readPostFile(path string) (Post, error) {
 		return Post{}, err
 	}
 	post.Hash = fmt.Sprintf("%x", hash)
-	Log.Info("Hash here: %s", post.Hash)
-	Log.Dump(post)
 	return post, nil
 }
 
@@ -135,21 +133,19 @@ func getPosts(categories []Category, paths ...string) []Post {
 	Posts := []Post{}
 	for _, category := range categories {
 		dirPath := filepath.Join(rootPath, strings.Replace(category.Name, "-", "/", 1))
-		posts, err := os.ReadDir(dirPath)
-		if err != nil {
-			Log.Error(err.Error())
-		}
-		for _, post := range posts {
-			if post.Name() != ".proprieties" {
-
-				fullPost, err := readPostFile(filepath.Join(dirPath, post.Name()))
+		err := filepath.WalkDir(dirPath, func(path string, d fs.DirEntry, err error) error {
+			if strings.ToLower(filepath.Ext(path)) == ".md" && !d.IsDir() {
+				fullPost, err := readPostFile(path)
 				if err != nil {
-					Log.Error(err.Error())
-					return []Post{}
+					return err
 				}
 				fullPost.Category = category.Name
 				Posts = append(Posts, fullPost)
 			}
+			return nil
+		})
+		if err != nil {
+			return []Post{}
 		}
 	}
 	return Posts
