@@ -2,92 +2,71 @@ package main
 
 import (
 	"log"
-	"os"
-	"time"
 
-	// "github.com/Blitz-Cloud/ettiHelper/routes"
 	"github.com/Blitz-Cloud/ettiHelper/routes"
 	"github.com/Blitz-Cloud/ettiHelper/types"
+	"github.com/Blitz-Cloud/ettiHelper/utils"
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/cors"
-	"github.com/gofiber/fiber/v2/middleware/logger"
-	"github.com/gofiber/template/mustache/v2"
-	"github.com/golang-jwt/jwt/v5"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
-type Post struct {
-	title   string
-	data    string
-	content string
-}
-
-// Claims struct to represent the JWT claims
-type Claims struct {
-	Aud string `json:"aud"`
-	Iss string `json:"iss"`
-	jwt.RegisteredClaims
-}
-
-type DBConType struct{}
-
-var DBCon DBConType
+// "github.com/Blitz-Cloud/ettiHelper/routes"
 
 func main() {
-
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Env file not loaded or missing")
-	}
-	serverLogger := log.New(os.Stdout, "INFO: ", log.Ldate|log.Ltime)
-	// initializarea bazei de date
-
-	// initializing the fiber app and setting the view engine
-	engine := mustache.New("./views", ".html")
-	app := fiber.New(fiber.Config{
-		Views:       engine,
-		ViewsLayout: "layout/main",
-	})
-	app.Static("/static", "./static")
-	app.Static("/assets", "./build/client/assets")
+	utils.Log.Info("SERVER Started")
+	app := fiber.New(fiber.Config{})
 
 	db, err := gorm.Open(sqlite.Open("./ettiContent.db"), &gorm.Config{})
 	if err != nil {
 		log.Fatal(err)
 	}
-	db.AutoMigrate(&types.Lab{}, &types.Blog{})
+	db.AutoMigrate(&types.Namespace{}, &types.Category{}, &types.Post{})
+	DB, err := utils.InMemoryDB("/home/ionut/project/content/ettiContent/root", "/home/ionut/project/content/ettiContent/etti")
 	if err != nil {
-		// serverLogger.Println(err)
-		serverLogger.Fatal(err)
+
+		utils.Log.Error(err.Error())
+	}
+	utils.Log.Info("IMPORTANT")
+	err = utils.SeedFromInMemory(db, DB)
+	if err != nil {
+		utils.Log.Error(err.Error())
 	}
 
+	// if err != nil {
+	// 	utils.Log.Error(err.Error())
+	// }
+	err = godotenv.Load()
+	if err != nil {
+		utils.Log.Fatal("ENV file not loaded or missing")
+	}
 	app.Use(func(c *fiber.Ctx) error {
-		c.Locals("db", db)
+		c.Locals("db", DB)
+
 		return c.Next()
 	})
 
-	// logging
-	app.Use(logger.New())
+	// // // logging
+	// app.Use(logger.New(logger.Config{}))
 
-	app.Use(cors.New(cors.Config{
-		// trebuie sa adaug prod si development aici
-		AllowOrigins:     "http://localhost:5173,http://localhost:3000,https://ettiui.netlify.app",
-		AllowCredentials: true,
-	}))
+	// app.Use(cors.New(cors.Config{
+	// 	// trebuie sa adaug prod si development aici
+	// 	AllowOrigins:     "http://localhost:5173,http://localhost:3000,https://ettiui.netlify.app",
+	// 	AllowCredentials: true,
+	// }))
 
-	app.Get("/login", func(c *fiber.Ctx) error {
-		return c.SendString("LoginPage")
-	})
+	// // // app.Get("/login", func(c *fiber.Ctx) error {
+	// // // 	return c.SendString("LoginPage")
+	// // // })
 
-	routes.RegisterApiRouter(app, serverLogger)
-	// routes.RegisterAdminRoutes(app, serverLogger)
-	app.Get("*", func(c *fiber.Ctx) error {
-		return c.SendFile("./build/client/index.html")
-	})
+	routes.RegisterApiRouter(app)
+	// // // routes.RegisterAdminRoutes(app, serverLogger)
+	// // app.Get("*", func(c *fiber.Ctx) error {
+	// // 	return c.SendFile("./build/client/index.html")
+	// // })
 
-	currentTime := time.Now().UTC().Local().Format(time.RFC3339)
-	os.WriteFile("./sync.txt", []byte(currentTime), 0777)
+	// currentTime := time.Now().UTC().Local().Format(time.RFC3339)
+	// os.WriteFile("./sync.txt", []byte(currentTime), 0777)
 	app.Listen(":3000")
 }
