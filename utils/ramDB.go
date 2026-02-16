@@ -24,8 +24,6 @@ type FrontmatterMetaData struct {
 }
 
 type Post struct {
-	// ID string
-	// frontmatter
 	FrontmatterMetaData
 	Category string
 	Content  string `json:"content"`

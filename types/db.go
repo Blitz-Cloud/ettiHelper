@@ -39,8 +39,9 @@ func (base *UUIDBase) BeforeCreate(tx *gorm.DB) error {
 // Namespace
 type Namespace struct {
 	UUIDBase
-	Name string `gorm:"uniqueIndex;not null"`
-
+	Name      string `gorm:"uniqueIndex;not null"`
+	Domains   string
+	Protected bool
 	// Relationships
 	Categories []Category `gorm:"foreignKey:NamespaceID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }

@@ -12,7 +12,7 @@ import (
 func RegisterApiRouter(app *fiber.App) {
 
 	// apiPost := app.Group("/api", middleware.ValidateJwtMiddleware)
-	apiPost := app.Group("/api/post")
+	apiPost := app.Group("/api")
 
 	// apiPost.Post("/admin/last-sync", func(c *fiber.Ctx) error {
 	// 	currentTime := time.Now().UTC().Local().Format(time.RFC3339)
@@ -22,6 +22,40 @@ func RegisterApiRouter(app *fiber.App) {
 
 	// este necesara o functie de middleware care sa verifice pt toate rutele daca utilizatorul este autentificat in cazul in care se incearca actualizarea sau accesarea unei baze de date a carui access este restrictionat
 
+	// implement since? pentru a prelua update urile 3
+
+	apiPost.Get("/db-status", func(c *fiber.Ctx) error {
+		db, ok := c.Locals("db").(*gorm.DB)
+		if !ok {
+			utils.Log.Fatal("Error accessing db con from admin route")
+		}
+		var namespaceCount int64
+		var categoryCount int64
+		var postCount int64
+		db.Table("namespaces").Count(&namespaceCount)
+		db.Table("categories").Count(&categoryCount)
+		db.Table("posts").Count(&postCount)
+		return c.JSON(map[string]int64{
+			"namespaces": namespaceCount,
+			"categories": categoryCount,
+			"posts":      postCount,
+		})
+	})
+
+	apiPost.Get("/namespace", func(c *fiber.Ctx) error {
+		db, ok := c.Locals("db").(*gorm.DB)
+		tenant := c.Query("tenant")
+		if !ok {
+			utils.Log.Fatal("Error accessing db con from admin route")
+		}
+		namespace := types.Namespace{}
+		if err := db.Find(&namespace, "name = ?", tenant).Error; err != nil {
+			utils.Log.Fatal(err.Error())
+		}
+
+		return c.JSON(namespace)
+	})
+
 	apiPost.Get("/namespaces", func(c *fiber.Ctx) error {
 		db, ok := c.Locals("db").(*gorm.DB)
 		if !ok {
@@ -30,68 +64,99 @@ func RegisterApiRouter(app *fiber.App) {
 		namespaces := []types.Namespace{}
 		if err := db.Find(&namespaces).Error; err != nil {
 			utils.Log.Fatal(err.Error())
-
 		}
 		return c.JSON(namespaces)
 	})
 
-	apiPost.Get("/:nameSpaceId/categories", func(c *fiber.Ctx) error {
+	apiPost.Get("/categories", func(c *fiber.Ctx) error {
+		headers := c.GetReqHeaders()
+		tenant := headers["X-Tenant"]
 		db, ok := c.Locals("db").(*gorm.DB)
-		nameSpaceId := c.Params("nameSpaceId")
-		if len(nameSpaceId) == 0 {
-			return c.SendStatus(fiber.StatusUnprocessableEntity)
-		}
-
 		if !ok {
 			utils.Log.Fatal("Error accessing db con from admin route")
 		}
 
+		namespace := types.Namespace{}
+
+		if err := db.Find(&namespace, "name = ?", tenant).Error; err != nil {
+			utils.Log.Fatal(err.Error())
+		}
+
 		categories := []types.Category{}
-		if err := db.Joins("Namespace").Where("namespace_id = ?", nameSpaceId).Find(&categories).Error; err != nil {
-			if errors.Is(err, gorm.ErrRecordNotFound) {
-				return c.SendStatus(fiber.StatusNotFound)
-			}
-			utils.Log.Error(err.Error())
-			return c.SendStatus(fiber.StatusInternalServerError)
+		if err := db.Find(&categories, "namespace_Id = ?", namespace.ID).Error; err != nil {
+			utils.Log.Fatal(err.Error())
+
 		}
 		return c.JSON(categories)
 	})
 
-	apiPost.Get("/:nameSpaceId/:categoryId", func(c *fiber.Ctx) error {
+	apiPost.Get("/posts", func(c *fiber.Ctx) error {
 		db, ok := c.Locals("db").(*gorm.DB)
-		nameSpaceId := c.Params("nameSpaceId")
-		categoryId := c.Params("categoryId")
-		utils.Log.Dump(categoryId)
-		if len(nameSpaceId) == 0 {
-			return c.SendStatus(fiber.StatusUnprocessableEntity)
-		}
-		if len(categoryId) == 0 {
-			return c.SendStatus(fiber.StatusUnprocessableEntity)
-		}
-
 		if !ok {
 			utils.Log.Fatal("Error accessing db con from admin route")
 		}
+		posts := []types.Post{}
+		if err := db.Find(&posts).Error; err != nil {
+			utils.Log.Fatal(err.Error())
 
-		category := types.Category{}
-		if err := db.Joins("Namespace").Preload("Posts").Where("namespace_id = ?", nameSpaceId).First(&category, "categories.id = ?", categoryId).Error; err != nil {
-			if errors.Is(err, gorm.ErrRecordNotFound) {
-				return c.SendStatus(fiber.StatusNotFound)
-			}
-			utils.Log.Error(err.Error())
-			return c.SendStatus(fiber.StatusInternalServerError)
 		}
-
-		return c.JSON(category)
+		return c.JSON(posts)
 	})
 
-	apiPost.Get("/:nameSpaceId/:categoryId/posts", func(c *fiber.Ctx) error {
+	// apiPost.Get("/:nameSpaceId/categories", func(c *fiber.Ctx) error {
+	// 	db, ok := c.Locals("db").(*gorm.DB)
+	// 	nameSpaceId := c.Params("nameSpaceId")
+	// 	if len(nameSpaceId) == 0 {
+	// 		return c.SendStatus(fiber.StatusUnprocessableEntity)
+	// 	}
+
+	// 	if !ok {
+	// 		utils.Log.Fatal("Error accessing db con from admin route")
+	// 	}
+
+	// 	categories := []types.Category{}
+	// 	if err := db.Joins("Namespace").Where("namespace_id = ?", nameSpaceId).Find(&categories).Error; err != nil {
+	// 		if errors.Is(err, gorm.ErrRecordNotFound) {
+	// 			return c.SendStatus(fiber.StatusNotFound)
+	// 		}
+	// 		utils.Log.Error(err.Error())
+	// 		return c.SendStatus(fiber.StatusInternalServerError)
+	// 	}
+	// 	return c.JSON(categories)
+	// })
+
+	// apiPost.Get("/:nameSpaceId/:categoryId", func(c *fiber.Ctx) error {
+	// 	db, ok := c.Locals("db").(*gorm.DB)
+	// 	nameSpaceId := c.Params("nameSpaceId")
+	// 	categoryId := c.Params("categoryId")
+	// 	utils.Log.Dump(categoryId)
+	// 	if len(nameSpaceId) == 0 {
+	// 		return c.SendStatus(fiber.StatusUnprocessableEntity)
+	// 	}
+	// 	if len(categoryId) == 0 {
+	// 		return c.SendStatus(fiber.StatusUnprocessableEntity)
+	// 	}
+
+	// 	if !ok {
+	// 		utils.Log.Fatal("Error accessing db con from admin route")
+	// 	}
+
+	// 	category := types.Category{}
+	// 	if err := db.Joins("Namespace").Preload("Posts").Where("namespace_id = ?", nameSpaceId).First(&category, "categories.id = ?", categoryId).Error; err != nil {
+	// 		if errors.Is(err, gorm.ErrRecordNotFound) {
+	// 			return c.SendStatus(fiber.StatusNotFound)
+	// 		}
+	// 		utils.Log.Error(err.Error())
+	// 		return c.SendStatus(fiber.StatusInternalServerError)
+	// 	}
+
+	// 	return c.JSON(category)
+	// })
+
+	apiPost.Get("/:categoryId/posts", func(c *fiber.Ctx) error {
+
 		db, ok := c.Locals("db").(*gorm.DB)
-		nameSpaceId := c.Params("nameSpaceId")
 		categoryId := c.Params("categoryId")
-		if len(nameSpaceId) == 0 {
-			return c.SendStatus(fiber.StatusUnprocessableEntity)
-		}
 		if len(categoryId) == 0 {
 			return c.SendStatus(fiber.StatusUnprocessableEntity)
 		}
@@ -99,9 +164,8 @@ func RegisterApiRouter(app *fiber.App) {
 		if !ok {
 			utils.Log.Fatal("Error accessing db con from admin route")
 		}
-
 		posts := []types.Post{}
-		if err := db.Where("category_id = ?", categoryId).Find(&posts).Error; err != nil {
+		if err := db.Find(&posts, "category_id = ?", categoryId).Error; err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
 				return c.SendStatus(fiber.StatusNotFound)
 			}
@@ -110,6 +174,30 @@ func RegisterApiRouter(app *fiber.App) {
 		}
 
 		return c.JSON(posts)
+	})
+
+	apiPost.Get("/post/:postId", func(c *fiber.Ctx) error {
+		db, ok := c.Locals("db").(*gorm.DB)
+		postId := c.Params("postId")
+		if len(postId) == 0 {
+			return c.SendStatus(fiber.StatusUnprocessableEntity)
+		}
+		if !ok {
+			utils.Log.Fatal("Error accessing db con from admin route")
+		}
+
+		post := types.Post{}
+
+		if err := db.Find(&post, "id = ?", postId).Error; err != nil {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				return c.SendStatus(fiber.StatusNotFound)
+			}
+			utils.Log.Error(err.Error())
+			return c.SendStatus(fiber.StatusInternalServerError)
+		}
+
+		return c.JSON(post)
+
 	})
 
 	apiPost.Get("/:nameSpaceId/:categoryId/:postId", func(c *fiber.Ctx) error {

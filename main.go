@@ -7,6 +7,7 @@ import (
 	"github.com/Blitz-Cloud/ettiHelper/types"
 	"github.com/Blitz-Cloud/ettiHelper/utils"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -42,7 +43,7 @@ func main() {
 		utils.Log.Fatal("ENV file not loaded or missing")
 	}
 	app.Use(func(c *fiber.Ctx) error {
-		c.Locals("db", DB)
+		c.Locals("db", db)
 
 		return c.Next()
 	})
@@ -50,11 +51,11 @@ func main() {
 	// // // logging
 	// app.Use(logger.New(logger.Config{}))
 
-	// app.Use(cors.New(cors.Config{
-	// 	// trebuie sa adaug prod si development aici
-	// 	AllowOrigins:     "http://localhost:5173,http://localhost:3000,https://ettiui.netlify.app",
-	// 	AllowCredentials: true,
-	// }))
+	app.Use(cors.New(cors.Config{
+		// trebuie sa adaug prod si development aici
+		AllowOrigins:     "http://localhost:5173,http://localhost:3000,https://ettiui.netlify.app",
+		AllowCredentials: true,
+	}))
 
 	// // // app.Get("/login", func(c *fiber.Ctx) error {
 	// // // 	return c.SendString("LoginPage")
