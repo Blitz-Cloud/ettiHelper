@@ -81,9 +81,9 @@ func main() {
 	routes.RegisterEttiAuth(app)
 	routes.RegisterApiRouter(app)
 	// // // routes.RegisterAdminRoutes(app, serverLogger)
-	// // app.Get("*", func(c *fiber.Ctx) error {
-	// // 	return c.SendFile("./build/client/index.html")
-	// // })
+	app.Get("*", func(c *fiber.Ctx) error {
+		return c.SendFile("./build/client/index.html")
+	})
 
 	// currentTime := time.Now().UTC().Local().Format(time.RFC3339)
 	// os.WriteFile("./sync.txt", []byte(currentTime), 0777)
