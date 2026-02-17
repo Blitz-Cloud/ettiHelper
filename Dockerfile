@@ -5,7 +5,7 @@ FROM node:lts AS react-ui-build
 RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
-RUN git clone https://github.com/Blitz-Cloud/ettiUi.git /app
+RUN git clone https://github.com/Blitz-Cloud/ettiUi2.git /app
 RUN npm i -g pnpm && pnpm i
 RUN pnpm run build
 
