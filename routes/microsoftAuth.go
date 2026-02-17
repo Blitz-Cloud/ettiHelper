@@ -35,7 +35,7 @@ func RegisterMicrosoftOAuth(app *fiber.App) {
 	}
 	verifier := oauth2.GenerateVerifier()
 
-	router := app.Group("/auth/microsoft")
+	router := app.Group("/auth/etti")
 	router.Get("/", func(c *fiber.Ctx) error {
 		authUrl := oauth2Config.AuthCodeURL("state", oauth2.AccessTypeOffline, oauth2.S256ChallengeOption(verifier))
 		return c.Redirect(authUrl)

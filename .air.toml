@@ -4,8 +4,9 @@ tmp_dir = "tmp"
 
 [build]
   args_bin = []
-  bin = "./ettiHelper"
-  cmd = "go build ."
+  bin = "/app/ettiHelper"
+  entrypoint =["/app/ettiHelper"]
+  cmd = "go build -o /app/ettiHelper ."
   delay = 1000
   exclude_dir = ["assets", "tmp", "vendor", "testdata","node_modules"]
   exclude_file = []

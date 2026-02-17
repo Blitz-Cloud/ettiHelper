@@ -1,0 +1,23 @@
+FROM golang:1.26-alpine
+
+# Install git (required for some go modules) and Air for hot-reloading
+RUN apk add build-base
+RUN apk add --no-cache sqlite-dev
+
+RUN apk add --no-cache git
+RUN go install github.com/air-verse/air@latest
+
+WORKDIR /app
+
+# Copy dependency files first to leverage Docker layer caching
+COPY go.mod go.sum ./
+RUN go mod download
+
+ENV CGO_ENABLED=1
+ENV GOFLAGS="-buildvcs=false"
+
+# We do NOT copy the source code here because it will be 
+# mounted via docker-compose volumes for instant updates.
+
+# Run Air to watch for changes
+CMD ["air", "-c", ".air.toml"]

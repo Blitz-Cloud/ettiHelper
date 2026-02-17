@@ -36,14 +36,21 @@ func (base *UUIDBase) BeforeCreate(tx *gorm.DB) error {
 	return nil
 }
 
-// Namespace
 type Namespace struct {
 	UUIDBase
 	Name      string `gorm:"uniqueIndex;not null"`
-	Domains   string
 	Protected bool
-	// Relationships
-	Categories []Category `gorm:"foreignKey:NamespaceID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	AuthFlow  string
+	// Domains    []Domain   `gorm:"foreignKey:NamespaceID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Categories  []Category `gorm:"foreignKey:NamespaceID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	TenantId    string     `gorm:"uniqueIndex"`
+	CallbackUri string
+}
+
+type Domain struct {
+	UUIDBase
+	NamespaceId string `gorm:"index"`
+	Value       string `gorm:"index"`
 }
 
 // Category
