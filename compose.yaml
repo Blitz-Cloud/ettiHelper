@@ -4,13 +4,14 @@ services:
       context: .
       target: release
     ports:
+
       - 3000:3000
     volumes:
       - "./.env:/app/.env"
       - "./ettiContent.db:/app/ettiContent.db"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.ettih.rule=Host(`ettih.blitzcloud.me`)"
+      - "traefik.http.routers.ettih.rule=Host(`etti.blitzcloud.me`) || Host(`blitzcloud.me`) || Host(`api.blitzcloud.me`) || Host('api.etti.blitzcloud.me')"
       - "traefik.http.routers.ettih.entrypoints=https"
       - "traefik.http.routers.ettih.tls=true"
       - "traefik.http.services.ettih.loadbalancer.server.port=3000"
@@ -19,6 +20,8 @@ services:
     networks:
       - web
     restart: always
+    environment:
+      - MS_AUTH_TENANT_ID=2d8cc8ba-8dda-4334-9e5c-fac2092e9bac
 
 networks:
   web:

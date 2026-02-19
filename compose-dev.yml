@@ -26,7 +26,7 @@ services:
     #   - PORT=8080
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.backend.rule=Host(`api.local.localhost`) || Host(`api.etti.local.localhost`) || Host(`api.blitzcloud.local.localhost`)"
+      - "traefik.http.routers.backend.rule=Host(`api.local.localhost`) || Host(`api.etti.local.localhost`) || Host(`api.blitzcloud.local.localhost`) || Host(`api.bltz.localhost`)"
       - "traefik.http.routers.backend.entrypoints=websecure"
       - "traefik.http.routers.backend.tls=true" # Enables self-signed TLS
       - "traefik.http.services.backend.loadbalancer.server.port=3000"
@@ -38,11 +38,11 @@ services:
     volumes:
       - ../ettiUi2:/app # Mounts your local code
       - /app/node_modules # An "anonymous volume" to keep node_modules in the container
+    environment:
+      - DEV=1
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.frontend.rule=Host(`local.localhost`) || Host(`etti.local.localhost`) || Host(`blitzcloud.local.localhost`)"
+      - "traefik.http.routers.frontend.rule=Host(`local.localhost`) || Host(`etti.local.localhost`) || Host(`blitzcloud.local.localhost`) || Host(`bltz.localhost`)"
       - "traefik.http.routers.frontend.entrypoints=websecure"
       - "traefik.http.routers.frontend.tls=true" # Enables self-signed TLS
       - "traefik.http.services.frontend.loadbalancer.server.port=5173" # Vite default is 5173
-    environment:
-      - DEV=1

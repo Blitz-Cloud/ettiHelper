@@ -6,6 +6,7 @@ import (
 
 	"github.com/Blitz-Cloud/ettiHelper/middleware"
 	"github.com/Blitz-Cloud/ettiHelper/routes"
+	"github.com/Blitz-Cloud/ettiHelper/routes/tenants"
 	"github.com/Blitz-Cloud/ettiHelper/types"
 	"github.com/Blitz-Cloud/ettiHelper/utils"
 	"github.com/davecgh/go-spew/spew"
@@ -22,6 +23,20 @@ import (
 func main() {
 	utils.Log.Info("SERVER Started")
 	app := fiber.New(fiber.Config{})
+	tenantManager := utils.InitTenant(app)
+	// app.Use(logger.New())
+	tenantManager.Store["root"] = []fiber.Handler{
+
+		func(c *fiber.Ctx) error {
+			spew.Dump("ROOT Middleware")
+			return c.Next()
+		},
+	}
+
+	tenantManager.Store["etti"] = []fiber.Handler{
+		logger.New(),
+		middleware.RouteProtector,
+	}
 
 	db, err := gorm.Open(sqlite.Open("./prod.db"), &gorm.Config{})
 	if os.Getenv("DEV") == "1" {
@@ -38,16 +53,11 @@ func main() {
 
 		utils.Log.Error(err.Error())
 	}
-	utils.Log.Info("IMPORTANT")
 	err = utils.SeedFromInMemory(db, DB)
 	if err != nil {
 		utils.Log.Error(err.Error())
 	}
-	app.Use(logger.New())
 
-	// if err != nil {
-	// 	utils.Log.Error(err.Error())
-	// }
 	err = godotenv.Load()
 	if err != nil {
 		utils.Log.Fatal("ENV file not loaded or missing")
@@ -56,12 +66,9 @@ func main() {
 		c.Locals("db", db)
 		return c.Next()
 	})
+
 	app.Use(middleware.UriRewriter)
 	app.Use(middleware.IsValidTenant)
-
-	// // // logging
-	// app.Use(logger.New(logger.Config{}))
-
 	app.Use(cors.New(cors.Config{
 		// trebuie sa adaug prod si development aici
 		AllowOriginsFunc: func(origin string) bool {
@@ -74,18 +81,17 @@ func main() {
 		AllowCredentials: true,
 	}))
 
-	// // // app.Get("/login", func(c *fiber.Ctx) error {
-	// // // 	return c.SendString("LoginPage")
-	// // // })
+	routes.RegisterApiRouterUnprotected(app)
 
-	routes.RegisterEttiAuth(app)
-	routes.RegisterApiRouter(app)
-	// // // routes.RegisterAdminRoutes(app, serverLogger)
-	app.Get("*", func(c *fiber.Ctx) error {
-		return c.SendFile("./build/client/index.html")
-	})
+	tenantManager.RegisterRouter(tenants.RegisterEttiAuth)
 
-	// currentTime := time.Now().UTC().Local().Format(time.RFC3339)
-	// os.WriteFile("./sync.txt", []byte(currentTime), 0777)
+	app.Use(tenantManager.TenantMiddlewareDispatcher())
+
+	routes.RegisterApiRouterProtected(app)
+
+	// app.Get("*", func(c *fiber.Ctx) error {
+	// 	return c.SendFile("./build/client/index.html")
+	// })
+
 	app.Listen(":3000")
 }

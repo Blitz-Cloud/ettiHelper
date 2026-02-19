@@ -7,7 +7,6 @@ import (
 	"os"
 	"strings"
 
-	"github.com/Blitz-Cloud/ettiHelper/types"
 	"github.com/MicahParks/keyfunc/v3"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
@@ -32,17 +31,18 @@ func IsValidMSJWT(token string) bool {
 }
 
 func RouteProtector(c *fiber.Ctx) error {
-	tenant, _ := c.Locals("tenant").(types.Namespace)
-	if tenant.AuthFlow == "none" {
-		return c.Next()
-	}
+	// tenant, _ := c.Locals("tenant").(types.Namespace)
+	// if tenant.AuthFlow == "none" {
+	// 	return c.Next()
+	// }
 	fmt.Println("Route protector hit")
 	date := c.Cookies("testC")
 	if date != "" {
 		fmt.Println("Access Allowed")
 		return c.Next()
 	}
-	return c.Redirect("/login")
+	return c.SendStatus(401)
+	// return c.Redirect("/login")
 }
 
 func AdminRouteProtector(c *fiber.Ctx) error {
