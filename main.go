@@ -89,9 +89,9 @@ func main() {
 
 	routes.RegisterApiRouterProtected(app)
 
-	// app.Get("*", func(c *fiber.Ctx) error {
-	// 	return c.SendFile("./build/client/index.html")
-	// })
+	app.Get("*", func(c *fiber.Ctx) error {
+		return c.SendFile("./build/client/index.html")
+	})
 
 	app.Listen(":3000")
 }
