@@ -16,7 +16,10 @@ func IsValidTenant(c *fiber.Ctx) error {
 	}
 	// spew.Dump(c.GetReqHeaders())
 	fullHostname := c.GetReqHeaders()["Host"][0]
-	hostname := strings.Split(fullHostname, "api.")[1]
+	hostname := fullHostname
+	if strings.Contains(fullHostname, ".api") {
+		hostname = strings.Split(fullHostname, "api.")[1]
+	}
 
 	if ok, tenant := IsValidDomain(db, hostname); ok == true {
 		c.Locals("tenant", tenant)

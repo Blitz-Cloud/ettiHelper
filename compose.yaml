@@ -11,7 +11,7 @@ services:
       - "./ettiContent.db:/app/ettiContent.db"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.ettih.rule=Host(`etti.blitzcloud.me`) || Host(`blitzcloud.me`) || Host(`api.blitzcloud.me`) || Host('api.etti.blitzcloud.me') || Host(`etti.ro`) || Host(`api.etti.ro`)"
+      - "traefik.http.routers.ettih.rule=Host(`etti.blitzcloud.me`) || Host(`blitzcloud.me`) || Host(`api.blitzcloud.me`) || Host(`api.etti.blitzcloud.me`) || Host(`etti.ro`) || Host(`api.etti.ro`)"
       - "traefik.http.routers.ettih.entrypoints=https"
       - "traefik.http.routers.ettih.tls=true"
       - "traefik.http.services.ettih.loadbalancer.server.port=3000"
