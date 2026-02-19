@@ -3,9 +3,9 @@ services:
     build:
       context: .
       target: release
-    ports:
+    # ports:
 
-      - 3000:3000
+    #   - 3000:3000
     volumes:
       - "./.env:/app/.env"
       - "./ettiContent.db:/app/ettiContent.db"
@@ -15,6 +15,9 @@ services:
       - "traefik.http.routers.ettih.entrypoints=https"
       - "traefik.http.routers.ettih.tls=true"
       - "traefik.http.services.ettih.loadbalancer.server.port=3000"
+      - "traefik.http.routers.ettih.tls.certresolver=cloudflare"
+      - "traefik.http.routers.ettih.tls.domains[0].main=etti.ro"
+      - "traefik.http.routers.ettih.tls.domains[0].sans=api.etti.ro"
       #Define midleware
       #- "traefik.http.routers.ettih.middlewares=my-traefikBouncer@file,my-cloudflarewarp@file"
     networks:
