@@ -21,10 +21,17 @@ import (
 // "github.com/Blitz-Cloud/ettiHelper/routes"
 
 func main() {
-	utils.Log.Info("SERVER Started")
+	err := godotenv.Load()
+	if err != nil {
+		utils.Log.Fatal("ENV file not loaded or missing")
+	}
+
 	app := fiber.New(fiber.Config{})
+	app.Static("/static", "./static")
+	app.Static("/assets", "./build/client/assets")
+	app.Use(logger.New())
+
 	tenantManager := utils.InitTenant(app)
-	// app.Use(logger.New())
 	tenantManager.Store["root"] = []fiber.Handler{
 
 		func(c *fiber.Ctx) error {
@@ -32,13 +39,13 @@ func main() {
 			return c.Next()
 		},
 	}
-
 	tenantManager.Store["etti"] = []fiber.Handler{
 		logger.New(),
 		middleware.RouteProtector,
 	}
 
 	db, err := gorm.Open(sqlite.Open("./prod.db"), &gorm.Config{})
+
 	if os.Getenv("DEV") == "1" {
 		spew.Dump("Running in DEV")
 		db, err = gorm.Open(sqlite.Open("./dev.db"), &gorm.Config{})
@@ -47,8 +54,11 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	db.AutoMigrate(&types.Namespace{}, &types.Category{}, &types.Post{}, &types.Domain{})
+
 	DB, err := utils.InMemoryDB("/home/ionut/project/content/ettiContent/root", "/home/ionut/project/content/ettiContent/etti")
+
 	if err != nil {
 
 		utils.Log.Error(err.Error())
@@ -58,10 +68,6 @@ func main() {
 		utils.Log.Error(err.Error())
 	}
 
-	err = godotenv.Load()
-	if err != nil {
-		utils.Log.Fatal("ENV file not loaded or missing")
-	}
 	app.Use(func(c *fiber.Ctx) error {
 		c.Locals("db", db)
 		return c.Next()
@@ -69,6 +75,7 @@ func main() {
 
 	app.Use(middleware.UriRewriter)
 	app.Use(middleware.IsValidTenant)
+
 	app.Use(cors.New(cors.Config{
 		// trebuie sa adaug prod si development aici
 		AllowOriginsFunc: func(origin string) bool {
@@ -93,5 +100,6 @@ func main() {
 		return c.SendFile("./build/client/index.html")
 	})
 
-	app.Listen(":3000")
+	utils.Log.Info("SERVER Started")
+	log.Fatal(app.Listen(":3000"))
 }

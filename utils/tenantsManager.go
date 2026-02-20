@@ -2,6 +2,7 @@ package utils
 
 import (
 	"github.com/Blitz-Cloud/ettiHelper/types"
+	"github.com/davecgh/go-spew/spew"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -38,6 +39,8 @@ func (tenantManager *TenantsManager) TenantMiddlewareDispatcher() fiber.Handler 
 			Log.Fatal("Failed to access tenant inside middleware dispatcher")
 		}
 		tenantName := tenant.AuthFlow
+		spew.Dump("Dispatcher")
+		spew.Dump(tenant)
 		if hanlers, ok := tenantManager.Store[tenantName]; ok {
 			for _, handler := range hanlers {
 				return handler(c)

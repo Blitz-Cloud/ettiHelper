@@ -17,7 +17,7 @@ func IsValidTenant(c *fiber.Ctx) error {
 	// spew.Dump(c.GetReqHeaders())
 	fullHostname := c.GetReqHeaders()["Host"][0]
 	hostname := fullHostname
-	if strings.Contains(fullHostname, ".api") {
+	if strings.Contains(fullHostname, "api.") {
 		hostname = strings.Split(fullHostname, "api.")[1]
 	}
 
