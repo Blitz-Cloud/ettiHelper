@@ -1,0 +1,45 @@
+services:
+  traefik:
+    image: traefik:v3.6
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+  server:
+    build:
+      context: .
+      target: release
+    # ports:
+
+    #   - 3000:3000
+    volumes:
+      - "./.env:/app/.env"
+      - "./debug.txt:/app/debug.txt"
+      - "./dev.db:/app/dev.db"
+    labels:
+      - "traefik.enable=true"
+      # - "traefik.http.routers.ettih.rule=Host(`etti.blitzcloud.me`) || Host(`blitzcloud.me`) || Host(`api.blitzcloud.me`) || Host(`api.etti.blitzcloud.me`) || Host(`etti.ro`) || Host(`api.etti.ro`)"
+      - "traefik.http.routers.ettih.rule=Host(`local.localhost`) || Host(`api.local.localhost`)"
+      - "traefik.http.routers.ettih.entrypoints=websecure"
+      - "traefik.http.routers.ettih.tls=true"
+      - "traefik.http.services.ettih.loadbalancer.server.port=3000"
+      # - "traefik.http.routers.ettih.tls.certresolver=cloudflare"
+      # - "traefik.http.routers.ettih.tls.domains[0].main=etti.ro"
+      # - "traefik.http.routers.ettih.tls.domains[0].sans=api.etti.ro"
+      #Define midleware
+      #- "traefik.http.routers.ettih.middlewares=my-traefikBouncer@file,my-cloudflarewarp@file"
+    restart: unless-stopped
+    environment:
+      - MS_AUTH_TENANT_ID=2d8cc8ba-8dda-4334-9e5c-fac2092e9bac
+
+networks:
+  web:
+    external: true

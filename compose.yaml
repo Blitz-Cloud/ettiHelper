@@ -8,7 +8,8 @@ services:
     #   - 3000:3000
     volumes:
       - "./.env:/app/.env"
-      - "./ettiContent.db:/app/ettiContent.db"
+      - "./debug.txt:/app/debug.txt"
+      - "./dev.db:/app/dev.db"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.ettih.rule=Host(`etti.blitzcloud.me`) || Host(`blitzcloud.me`) || Host(`api.blitzcloud.me`) || Host(`api.etti.blitzcloud.me`) || Host(`etti.ro`) || Host(`api.etti.ro`)"
